@@ -39,6 +39,8 @@ You can include the SDK to your project using:
     node create_document.js
     ```
 - You can make the changes in any of the sample code and test if your changes get reflected in the output.
+ 
+- Check the [documentation page](https://www.zoho.com/officeplatform/integrator/api/v1/) for all possible customizations.
 
 ## License
 
