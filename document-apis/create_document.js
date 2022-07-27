@@ -1,13 +1,11 @@
-const fs = require("fs");
 const SDKInitializer = require("../SDKInitializer").SDKInitializer;
-const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
 
 const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
 
 const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/create_document_parameters").CreateDocumentParameters;
 const Margin = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/margin").Margin;
 const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/user_info").UserInfo;
-const UIOptions = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/ui_options").UIOptions;
+const UiOptions = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/ui_options").UiOptions;
 const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/document_info").DocumentInfo;
 const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/editor_settings").EditorSettings;
 const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/document_defaults").DocumentDefaults;
@@ -16,10 +14,10 @@ const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_in
 const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/create_document_response").CreateDocumentResponse;
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
 
-class EditDocument {
+class CreateDocument {
 
     static async execute() {
-        
+
         /** Initializing once is enough. Calling here since code sample will be tested standalone. 
           * You can place SDKInitializer in you application and call while start-up. 
           */
@@ -29,20 +27,11 @@ class EditDocument {
             var sdkOperations = new OfficeIntegratorSDKOperations();
             var createDocumentParameters = new CreateDocumentParameters();
 
-            // createDocumentParameters.setUrl("https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx");
-
-            var fileName = "Graphic-Design-Proposal.docx";
-            var filePath = __dirname + "/sample_documents/Graphic-Design-Proposal.docx";
-            var fileStream = fs.readFileSync(filePath);
-            var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
-            
-            createDocumentParameters.setDocument(streamWrapper);
-
             var documentInfo = new DocumentInfo();
 
             //Time value used to generate unique document everytime. You can replace based on your application.
             documentInfo.setDocumentId("" + new Date().getTime());
-            documentInfo.setDocumentName("Graphic-Design-Proposal.docx");
+            documentInfo.setDocumentName("New Document");
 
             createDocumentParameters.setDocumentInfo(documentInfo);
 
@@ -55,34 +44,46 @@ class EditDocument {
 
             var margin = new Margin();
 
+            //TODO: NOT WORKING in writer 
             margin.setTop("2in");
+            //TODO: NOT WORKING in writer 
             margin.setBottom("2in");
+            //TODO: NOT WORKING in writer 
             margin.setLeft("2in");
+            //TODO: NOT WORKING in writer 
             margin.setRight("2in");
 
             var documentDefaults = new DocumentDefaults();
 
-            //TODO: Need to add language option in this code
-            documentDefaults.setTrackChanges("enabled");
+            documentDefaults.setFontName("Arial");
+            //SDK Issue: Issue with type casting. Expecting bigint. Bigint also throws serialise error. Need to check with crm zest team
+            //documentDefaults.setFontSize(16);
+            //TODO: NOT WORKING in writer 
+            documentDefaults.setOrientation("landscape");
+            //TODO: NOT WORKING in writer 
+            documentDefaults.setPaperSize("A4");
+            //documentDefaults.setTrackChanges("enabled");
+            //TODO: NOT WORKING 
+            documentDefaults.setMargin(margin);
 
             createDocumentParameters.setDocumentDefaults(documentDefaults);
 
             var editorSettings = new EditorSettings();
 
-            editorSettings.setUnit("mm");
+            editorSettings.setUnit("in");
             editorSettings.setLanguage("en");
             editorSettings.setView("pageview");
 
             createDocumentParameters.setEditorSettings(editorSettings);
 
-            var uiOptions = new UIOptions();
+            var uiOptions = new UiOptions();
 
             uiOptions.setDarkMode("hide");
             uiOptions.setFileMenu("hide");
             uiOptions.setSaveButton("hide");
             uiOptions.setChatPanel("hide");
-            //TODO: UIOptions object undefined exception
-            //createDocumentParameters.setUiOptions(uiOptions);
+
+            createDocumentParameters.setUiOptions(uiOptions);
 
             var permissions = new Map();
 
@@ -106,10 +107,12 @@ class EditDocument {
             callbackSettings.setSaveUrlParams(saveUrlParams);
 
             callbackSettings.setHttpMethodType("post");
+            //SDK Issue: Issue with type casting.
             //callbackSettings.setRetries(BigInt(1));
+            //SDK Issue: Issue with type casting.
             //callbackSettings.setTimeout(BigInt(100000));
             callbackSettings.setSaveUrl("https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157a25e63fc4dfd4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286");
-            callbackSettings.setSaveFormat("pdf");
+            callbackSettings.setSaveFormat("zdoc");
 
             createDocumentParameters.setCallbackSettings(callbackSettings);
 
@@ -145,4 +148,4 @@ class EditDocument {
     }
 }
 
-EditDocument.execute();
+CreateDocument.execute();
