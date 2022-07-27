@@ -5,7 +5,7 @@ const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/crm/
 const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/create_document_parameters").CreateDocumentParameters;
 const Margin = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/margin").Margin;
 const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/user_info").UserInfo;
-const UIOptions = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/ui_options").UIOptions;
+const UiOptions = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/ui_options").UiOptions;
 const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/document_info").DocumentInfo;
 const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/editor_settings").EditorSettings;
 const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/document_defaults").DocumentDefaults;
@@ -57,7 +57,7 @@ class CreateDocument {
 
             documentDefaults.setFontName("Arial");
             //SDK Issue: Issue with type casting. Expecting bigint. Bigint also throws serialise error. Need to check with crm zest team
-            //documentDefaults.setFontSize("16");
+            //documentDefaults.setFontSize(16);
             //TODO: NOT WORKING in writer 
             documentDefaults.setOrientation("landscape");
             //TODO: NOT WORKING in writer 
@@ -76,14 +76,14 @@ class CreateDocument {
 
             createDocumentParameters.setEditorSettings(editorSettings);
 
-            var uiOptions = new UIOptions();
+            var uiOptions = new UiOptions();
 
             uiOptions.setDarkMode("hide");
             uiOptions.setFileMenu("hide");
             uiOptions.setSaveButton("hide");
             uiOptions.setChatPanel("hide");
-            //SDK Issue: UIOptions object undefined exception
-            //createDocumentParameters.setUiOptions(uiOptions);
+
+            createDocumentParameters.setUiOptions(uiOptions);
 
             var permissions = new Map();
 
@@ -112,7 +112,7 @@ class CreateDocument {
             //SDK Issue: Issue with type casting.
             //callbackSettings.setTimeout(BigInt(100000));
             callbackSettings.setSaveUrl("https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157a25e63fc4dfd4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286");
-            callbackSettings.setSaveFormat("pdf");
+            callbackSettings.setSaveFormat("docx");
 
             createDocumentParameters.setCallbackSettings(callbackSettings);
 
