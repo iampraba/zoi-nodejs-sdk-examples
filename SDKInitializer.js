@@ -6,9 +6,6 @@ const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
 
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/create_document_parameters").CreateDocumentParameters;
-
 class SDKInitializer {
 
     static async initialize() {

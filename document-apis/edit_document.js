@@ -1,42 +1,62 @@
+const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
+const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
+const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
+const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
+const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
+const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
+const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
+
 const fs = require("fs");
-const { UiOptions } = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/ui_options");
-const SDKInitializer = require("../SDKInitializer").SDKInitializer;
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-
-const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/create_document_parameters").CreateDocumentParameters;
-const Margin = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/margin").Margin;
-const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/user_info").UserInfo;
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/document_info").DocumentInfo;
-const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/editor_settings").EditorSettings;
-const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/document_defaults").DocumentDefaults;
-const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/callback_settings").CallbackSettings;
-
-const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/create_document_response").CreateDocumentResponse;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const Margin = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/margin").Margin;
+const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/user_info").UserInfo;
+const UiOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/ui_options").UiOptions;
+const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info").DocumentInfo;
+const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/editor_settings").EditorSettings;
+const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_defaults").DocumentDefaults;
+const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/callback_settings").CallbackSettings;
+const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_response").CreateDocumentResponse;
+const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_parameters").CreateDocumentParameters;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
 
 class EditDocument {
 
+    //Include zoi-nodejs-sdk package in your package json and the execute this code.
+
+    static async initializeSdk() {
+        let user = new UserSignature("john@zylker.com");
+        let environment = new Environment("https://api.office-integrator.com", null, null);
+        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
+        let logger = new LogBuilder()
+            .level(Levels.INFO)
+            .filePath("./app.log")
+            .build();
+        let initialize = await new InitializeBuilder();
+
+        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
+
+        console.log("\nSDK initialized successfully.");
+    }
+
     static async execute() {
         
-        /** Initializing once is enough. Calling here since code sample will be tested standalone. 
-          * You can place SDKInitializer in you application and call while start-up. 
-          */
-         await SDKInitializer.initialize();
+        //Initializing SDK once is enough. Calling here since code sample will be tested standalone. 
+        //You can place SDK initializer code in you application and call once while your application start-up. 
+        await this.initializeSdk();
 
         try {
             var sdkOperations = new OfficeIntegratorSDKOperations();
             var createDocumentParameters = new CreateDocumentParameters();
 
-            // createDocumentParameters.setUrl("https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx");
+            createDocumentParameters.setUrl("https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx");
 
-            var fileName = "Graphic-Design-Proposal.docx";
-            var filePath = __dirname + "/sample_documents/Graphic-Design-Proposal.docx";
-            var fileStream = fs.readFileSync(filePath);
-            var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
+            //var fileName = "Graphic-Design-Proposal.docx";
+            //var filePath = __dirname + "/sample_documents/Graphic-Design-Proposal.docx";
+            //var fileStream = fs.readFileSync(filePath);
+            //var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
             
-            createDocumentParameters.setDocument(streamWrapper);
+            //createDocumentParameters.setDocument(streamWrapper);
 
             var documentInfo = new DocumentInfo();
 
@@ -62,7 +82,6 @@ class EditDocument {
 
             var documentDefaults = new DocumentDefaults();
 
-            //TODO: Need to add language option in this code
             documentDefaults.setTrackChanges("enabled");
 
             createDocumentParameters.setDocumentDefaults(documentDefaults);
@@ -77,12 +96,12 @@ class EditDocument {
 
             var uiOptions = new UiOptions();
 
-            uiOptions.setDarkMode("hide");
-            uiOptions.setFileMenu("hide");
-            uiOptions.setSaveButton("hide");
-            uiOptions.setChatPanel("hide");
-            //TODO: UIOptions object undefined exception
-            //createDocumentParameters.setUiOptions(uiOptions);
+            uiOptions.setDarkMode("show");
+            uiOptions.setFileMenu("show");
+            uiOptions.setSaveButton("show");
+            uiOptions.setChatPanel("show");
+
+            createDocumentParameters.setUiOptions(uiOptions);
 
             var permissions = new Map();
 
@@ -105,11 +124,11 @@ class EditDocument {
 
             callbackSettings.setSaveUrlParams(saveUrlParams);
 
+            callbackSettings.setRetries(1);
+            callbackSettings.setTimeout(10000);
+            callbackSettings.setSaveFormat("zdoc");
             callbackSettings.setHttpMethodType("post");
-            //callbackSettings.setRetries(BigInt(1));
-            //callbackSettings.setTimeout(BigInt(100000));
-            callbackSettings.setSaveUrl("https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157a25e63fc4dfd4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286");
-            callbackSettings.setSaveFormat("pdf");
+            callbackSettings.setSaveUrl("https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157123434d4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286");
 
             createDocumentParameters.setCallbackSettings(callbackSettings);
 
@@ -126,21 +145,21 @@ class EditDocument {
     
                     //Check if expected CreateDocumentResponse instance is received
                     if(writerResponseObject instanceof CreateDocumentResponse){
-                        console.log("Document ID - " + writerResponseObject.getDocumentId());
-                        console.log("Document save URL - " + writerResponseObject.getSaveUrl());
-                        console.log("Document delete URL - " + writerResponseObject.getDocumentDeleteUrl());
-                        console.log("Document session ID - " + writerResponseObject.getSessionId());
-                        console.log("Document session URL - " + writerResponseObject.getDocumentUrl());
-                        console.log("Document session delete URL - " + writerResponseObject.getSessionDeleteUrl());
+                        console.log("\nDocument ID - " + writerResponseObject.getDocumentId());
+                        console.log("\nDocument session ID - " + writerResponseObject.getSessionId());
+                        console.log("\nDocument session URL - " + writerResponseObject.getDocumentUrl());
+                        console.log("\nDocument save URL - " + writerResponseObject.getSaveUrl());
+                        console.log("\nDocument delete URL - " + writerResponseObject.getDocumentDeleteUrl());
+                        console.log("\nDocument session delete URL - " + writerResponseObject.getSessionDeleteUrl());
                     } else if (writerResponseObject instanceof InvaildConfigurationException) {
-                        console.log("Invalid configuration exception. Exception json - ", writerResponseObject);
+                        console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
-                        console.log("Request not completed successfullly");
+                        console.log("\nRequest not completed successfullly");
                     }
                 }
             }
         } catch (error) {
-            console.log("Exception while running sample code", error);
+            console.log("\nException while running sample code", error);
         }
     }
 }

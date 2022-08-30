@@ -1,17 +1,16 @@
-const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
 const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
-const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
-const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
-const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
 const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
+const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
+const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
+const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
+const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
 
-const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_parameters").CreateDocumentParameters;
-const SessionDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/session_delete_success_response").SessionDeleteSuccessResponse;
+const PlanDetails = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/plan_details").PlanDetails;
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
 const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
 
-class DeleteDocumentSession {
+class GetPlanDetails {
 
     //Include zoi-nodejs-sdk package in your package json and the execute this code.
 
@@ -37,28 +36,25 @@ class DeleteDocumentSession {
         await this.initializeSdk();
 
         try {
-            var createDocumentParameters = new CreateDocumentParameters();
             var sdkOperations = new OfficeIntegratorSDKOperations();
-
-            var createResponse = await sdkOperations.createDocument(createDocumentParameters);
-
-            var sessionId = createResponse.object.getSessionId();
-
-            console.log("\nCreated a session to demonstrate the session delete api. Created document session ID - " + sessionId);
-
-            var responseObject = await sdkOperations.deleteSession(sessionId);
+            var responseObject = await sdkOperations.getPlanDetails();
 
             if(responseObject != null) {
                 //Get the status code from response
                 console.log("\nStatus Code: " + responseObject.statusCode);
     
                 //Get the api response object from responseObject
-                let writerResponseObject = responseObject.object;
+                let planResponseObject = responseObject.object;
     
-                if(writerResponseObject != null){
-                    if(writerResponseObject instanceof SessionDeleteSuccessResponse){
-                        console.log("\nSession delete status - " + writerResponseObject.getSessionDelete());
-                    } else if (writerResponseObject instanceof InvaildConfigurationException) {
+                if(planResponseObject != null) {
+                    if(planResponseObject instanceof PlanDetails){
+                        console.log("\nPlan name - " + planResponseObject.getPlanName());
+                        console.log("\nAPI usage limit - " + planResponseObject.getUsageLimit());
+                        console.log("\nAPI usage so far - " + planResponseObject.getTotalUsage());
+                        console.log("\nPlan upgrade payment link - " + planResponseObject.getPaymentLink());
+                        console.log("\nSubscription period - " + planResponseObject.getSubscriptionPeriod());
+                        console.log("\nSubscription interval - " + planResponseObject.getSubscriptionInterval());
+                    } else if (planResponseObject instanceof InvaildConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
@@ -71,4 +67,4 @@ class DeleteDocumentSession {
     }
 }
 
-DeleteDocumentSession.execute();
+GetPlanDetails.execute();

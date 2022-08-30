@@ -1,38 +1,57 @@
+const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
+const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
+const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
+const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
+const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
+const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
+const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
+
 const fs = require("fs");
-const SDKInitializer = require("../SDKInitializer").SDKInitializer;
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-
-const PreviewParameters = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/preview_parameters").PreviewParameters;
-
-const PreviewDocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/preview_document_info").PreviewDocumentInfo;
-
-const PreviewResponse = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/preview_response").PreviewResponse;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/crm/api/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const PreviewResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/preview_response").PreviewResponse;
+const PreviewParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/preview_parameters").PreviewParameters;
+const PreviewDocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/preview_document_info").PreviewDocumentInfo;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
 
 class PreviewDocument {
 
+    //Include zoi-nodejs-sdk package in your package json and the execute this code.
+
+    static async initializeSdk() {
+        let user = new UserSignature("john@zylker.com");
+        let environment = new Environment("https://api.office-integrator.com", null, null);
+        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
+        let logger = new LogBuilder()
+            .level(Levels.INFO)
+            .filePath("./app.log")
+            .build();
+        let initialize = await new InitializeBuilder();
+
+        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
+
+        console.log("\nSDK initialized successfully.");
+    }
+
     static async execute() {
         
-        /** Initializing once is enough. Calling here since code sample will be tested standalone. 
-          * You can place SDKInitializer in you application and call while start-up. 
-          */
-         await SDKInitializer.initialize();
+        //Initializing SDK once is enough. Calling here since code sample will be tested standalone. 
+        //You can place SDK initializer code in you application and call once while your application start-up. 
+        await this.initializeSdk();
 
         try {
             var sdkOperations = new OfficeIntegratorSDKOperations();
             var previewParameters = new PreviewParameters();
 
-            //previewParameters.setUrl("https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx");
+            previewParameters.setUrl("https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx");
 
-            var fileName = "Graphic-Design-Proposal.docx";
-            var filePath = __dirname + "/sample_documents/Graphic-Design-Proposal.docx";
-            var fileStream = fs.readFileSync(filePath);
-            var streamWrapper = new StreamWrapper(fileName, fileStream, filePath)
+            // var fileName = "Graphic-Design-Proposal.docx";
+            // var filePath = __dirname + "/sample_documents/Graphic-Design-Proposal.docx";
+            // var fileStream = fs.readFileSync(filePath);
+            // var streamWrapper = new StreamWrapper(fileName, fileStream, filePath)
             //var streamWrapper = new StreamWrapper(null, null, filePath)
             
-            previewParameters.setDocument(streamWrapper);
+            // previewParameters.setDocument(streamWrapper);
 
             var previewDocumentInfo = new PreviewDocumentInfo();
 
@@ -51,30 +70,30 @@ class PreviewDocument {
 
             if(responseObject != null) {
                 //Get the status code from response
-                console.log("Status Code: " + responseObject.statusCode);
+                console.log("\nStatus Code: " + responseObject.statusCode);
     
                 //Get the api response object from responseObject
                 let writerResponseObject = responseObject.object;
     
                 if(writerResponseObject != null) {
-                    console.log("Preview URL : " + writerResponseObject.getPreviewUrl());
-                    //SDK ISSUE: Need to fix below check since instanceof check not working for proper response
+                    console.log("\nPreview URL : " + writerResponseObject.getPreviewUrl());
+
                     //Check if expected PreviewResponse instance is received
                     if(writerResponseObject instanceof PreviewResponse) {
-                        console.log("Document ID - " + writerResponseObject.getDocumentId());
-                        console.log("Document session ID - " + writerResponseObject.getSessionId());
-                        console.log("Document preview URL - " + writerResponseObject.getPreviewUrl());
-                        console.log("Document delete URL - " + writerResponseObject.getDocumentDeleteUrl());
-                        console.log("Document session delete URL - " + writerResponseObject.getSessionDeleteUrl());
+                        console.log("\nDocument ID - " + writerResponseObject.getDocumentId());
+                        console.log("\nDocument session ID - " + writerResponseObject.getSessionId());
+                        console.log("\nDocument preview URL - " + writerResponseObject.getPreviewUrl());
+                        console.log("\nDocument delete URL - " + writerResponseObject.getDocumentDeleteUrl());
+                        console.log("\nDocument session delete URL - " + writerResponseObject.getSessionDeleteUrl());
                     } else if (writerResponseObject instanceof InvaildConfigurationException) {
-                        console.log("Invalid configuration exception. Exception json - ", writerResponseObject);
+                        console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
-                        console.log("Request not completed successfullly");
+                        console.log("\nRequest not completed successfullly");
                     }
                 }
             }
         } catch (error) {
-            console.log("Exception while running sample code", error);
+            console.log("\nException while running sample code", error);
         }
     }
 }

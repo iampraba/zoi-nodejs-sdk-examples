@@ -11,8 +11,8 @@ const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").Stream
 const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/user_info").UserInfo;
 const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info").DocumentInfo;
 const ShowCallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/show_callback_settings").ShowCallbackSettings;
-const ZohoShowEditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/zoho_show_editor_settings").ZohoShowEditorSettings;
 const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_response").CreateDocumentResponse;
+const ZohoShowEditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/zoho_show_editor_settings").ZohoShowEditorSettings;
 const CreatePresentationParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_presentation_parameters").CreatePresentationParameters;
 const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
@@ -45,22 +45,14 @@ class EditPresentation {
         try {
             var sdkOperations = new OfficeIntegratorSDKOperations();
             var createPresentationParameters = new CreatePresentationParameters();
-
-            createPresentationParameters.setUrl("https://demo.office-integrator.com/samples/show/Zoho_Show.pptx");
-            
-            // var fileName = "Zoho_Show.pptx";
-            // var filePath = __dirname + "/sample_documents/Zoho_Show.pptx";
-            // var fileStream = fs.readFileSync(filePath);
-            // var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
-            // var streamWrapper = new StreamWrapper(null, null, filePath);
-            
-            // createPresentationParameters.setDocument(streamWrapper);
             
             var documentInfo = new DocumentInfo();
 
-            //Time value used to generate unique document everytime. You can replace based on your application.
-            documentInfo.setDocumentId("" + new Date().getTime());
-            documentInfo.setDocumentName("Zoho_Show.pptx");
+            //To collaborate in existing document you need to provide the document id(e.g: 1000) alone is enough.
+            //Note: Make sure the document already exist in Zoho server for below given document id.
+            //Even if the document is added to this request, if document exist in zoho server for given document id,
+            //then session will be create for document already exist with Zoho.
+            documentInfo.setDocumentId("1000");
 
             createPresentationParameters.setDocumentInfo(documentInfo);
 
@@ -95,28 +87,28 @@ class EditPresentation {
             var responseObject = await sdkOperations.createPresentation(createPresentationParameters);
 
             if(responseObject != null) {
-                console.log("Status Code: " + responseObject.statusCode);
+                console.log("\nStatus Code: " + responseObject.statusCode);
     
-                let presentationResponseObject = responseObject.object;
+                let writerResponseObject = responseObject.object;
     
-                if(presentationResponseObject != null){
+                if(writerResponseObject != null){
 
-                    if(presentationResponseObject instanceof CreateDocumentResponse){
-                        console.log("\nPresentation ID - " + presentationResponseObject.getDocumentId());
-                        console.log("\nPresentation session ID - " + presentationResponseObject.getSessionId());
-                        console.log("\nPresentation session URL - " + presentationResponseObject.getDocumentUrl());
-                        console.log("\nPresentation save URL - " + presentationResponseObject.getSaveUrl());
-                        console.log("\nPresentation delete URL - " + presentationResponseObject.getDocumentDeleteUrl());
-                        console.log("\nPresentation session delete URL - " + presentationResponseObject.getSessionDeleteUrl());
-                    } else if (presentationResponseObject instanceof InvaildConfigurationException) {
-                        console.log("\nInvalid configuration exception. Exception json - ", presentationResponseObject);
+                    if(writerResponseObject instanceof CreateDocumentResponse){
+                        console.log("\nPresentation ID - " + writerResponseObject.getDocumentId());
+                        console.log("\nPresentation session ID - " + writerResponseObject.getSessionId());
+                        console.log("\nPresentation session URL - " + writerResponseObject.getDocumentUrl());
+                        console.log("\nPresentation save URL - " + writerResponseObject.getSaveUrl());
+                        console.log("\nPresentation delete URL - " + writerResponseObject.getDocumentDeleteUrl());
+                        console.log("\nPresentation session delete URL - " + writerResponseObject.getSessionDeleteUrl());
+                    } else if (writerResponseObject instanceof InvaildConfigurationException) {
+                        console.log("Invalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
-                        console.log("\nRequest not completed successfullly");
+                        console.log("Request not completed successfullly");
                     }
                 }
             }
         } catch (error) {
-            console.log("\nException while running sample code", error);
+            console.log("Exception while running sample code", error);
         }
     }
 }

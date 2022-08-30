@@ -15,7 +15,7 @@ const SheetCallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegr
 const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
 
-class CreateSheet {
+class EditSheet {
 
     //Include zoi-nodejs-sdk package in your package json and the execute this code.
 
@@ -43,12 +43,15 @@ class CreateSheet {
         try {
             var sdkOperations = new OfficeIntegratorSDKOperations();
             var createSheetParameters = new CreateSheetParameters();
-            
+
             var documentInfo = new DocumentInfo();
 
-            //Time value used to generate unique document everytime. You can replace based on your application.
-            documentInfo.setDocumentId("" + new Date().getTime());
-            documentInfo.setDocumentName("New Document");
+            //To collaborate in existing document you need to provide the document id(e.g: 1000) alone is enough.
+            //Note: Make sure the document already exist in Zoho server for below given document id.
+            //Even if the document is added to this request, if document exist in zoho server for given document id,
+            //then session will be create for document already exist with Zoho.
+            documentInfo.setDocumentId("1000");
+            documentInfo.setDocumentName("Contact_List.xlsx");
 
             createSheetParameters.setDocumentInfo(documentInfo);
 
@@ -89,11 +92,11 @@ class CreateSheet {
 
             if(responseObject != null) {
                 //Get the status code from response
-                console.log("Status Code: " + responseObject.statusCode);
+                console.log("\nStatus Code: " + responseObject.statusCode);
     
                 //Get the api response object from responseObject
                 let sheetResponseObject = responseObject.object;
-
+    
                 if(sheetResponseObject != null){
 
                     //Check if expected CreateSheetResponse instance is received
@@ -113,9 +116,9 @@ class CreateSheet {
                 }
             }
         } catch (error) {
-            console.log("Exception while running sample code", error);
+            console.log("\nException while running sample code", error);
         }
     }
 }
 
-CreateSheet.execute();
+EditSheet.execute();

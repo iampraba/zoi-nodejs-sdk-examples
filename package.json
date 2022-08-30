@@ -9,7 +9,7 @@
     "author": "iampraba <praburaji93@gmail.com>",
     "license": "Apache-2.0",
     "dependencies": {
-      "zoi-nodejs-sdk": "^1.0.2"
+      "zoi-nodejs-sdk": "^1.0.3"
     }
   }
   

@@ -6,11 +6,9 @@ const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilde
 const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 
-const Margin = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/margin").Margin;
-const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/user_info").UserInfo;
 const UiOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/ui_options").UiOptions;
+const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/user_info").UserInfo;
 const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info").DocumentInfo;
-const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/editor_settings").EditorSettings;
 const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_defaults").DocumentDefaults;
 const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/callback_settings").CallbackSettings;
 const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_response").CreateDocumentResponse;
@@ -18,7 +16,7 @@ const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeint
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
 const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
 
-class CreateDocument {
+class CoEditDocument {
 
     //Include zoi-nodejs-sdk package in your package json and the execute this code.
 
@@ -34,7 +32,7 @@ class CreateDocument {
 
         await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
 
-        console.log("SDK initialized successfully.");
+        console.log("\nSDK initialized successfully.");
     }
 
     static async execute() {
@@ -49,9 +47,11 @@ class CreateDocument {
 
             var documentInfo = new DocumentInfo();
 
-            //Time value used to generate unique document everytime. You can replace based on your application.
-            documentInfo.setDocumentId("" + new Date().getTime());
-            documentInfo.setDocumentName("New Document");
+            //To collaborate in existing document you need to provide the document id(e.g: 1000) alone is enough.
+            //Note: Make sure the document already exist in Zoho server for below given document id.
+            //Even if the document is added to this request, if document exist in zoho server for given document id,
+            //then session will be create for document already exist with Zoho.
+            documentInfo.setDocumentId("1000");
 
             createDocumentParameters.setDocumentInfo(documentInfo);
 
@@ -62,32 +62,11 @@ class CreateDocument {
 
             createDocumentParameters.setUserInfo(userInfo);
 
-            var margin = new Margin();
-
-            margin.setTop("2in");
-            margin.setBottom("2in");
-            margin.setLeft("2in");
-            margin.setRight("2in");
-
             var documentDefaults = new DocumentDefaults();
 
-            documentDefaults.setFontSize(12);
-            documentDefaults.setPaperSize("A4");
-            documentDefaults.setFontName("Arial");
             documentDefaults.setTrackChanges("enabled");
-            documentDefaults.setOrientation("landscape");
-
-            documentDefaults.setMargin(margin);
 
             createDocumentParameters.setDocumentDefaults(documentDefaults);
-
-            var editorSettings = new EditorSettings();
-
-            editorSettings.setUnit("in");
-            editorSettings.setLanguage("en");
-            editorSettings.setView("pageview");
-
-            createDocumentParameters.setEditorSettings(editorSettings);
 
             var uiOptions = new UiOptions();
 
@@ -95,19 +74,18 @@ class CreateDocument {
             uiOptions.setFileMenu("show");
             uiOptions.setSaveButton("show");
             uiOptions.setChatPanel("show");
-
             createDocumentParameters.setUiOptions(uiOptions);
 
             var permissions = new Map();
 
+            permissions.set("collab.chat", false);
+            permissions.set("document.edit", true);
+            permissions.set("document.fill", false);
             permissions.set("document.export", true);
             permissions.set("document.print", false);
-            permissions.set("document.edit", true);
             permissions.set("review.comment", false);
             permissions.set("review.changes.resolve", false);
-            permissions.set("collab.chat", false);
             permissions.set("document.pausecollaboration", false);
-            permissions.set("document.fill", false);
 
             createDocumentParameters.setPermissions(permissions);
 
@@ -117,9 +95,9 @@ class CreateDocument {
             saveUrlParams.set("auth_token", "1234");
             saveUrlParams.set("id", "123131");
 
-            callbackSettings.setSaveUrlParams(saveUrlParams);
+            callbackSettings.setSaveUrlParams(saveUrlParams);            
             callbackSettings.setRetries(1);
-            callbackSettings.setSaveFormat("zdoc");
+            callbackSettings.setSaveFormat("docx");
             callbackSettings.setHttpMethodType("post");
             callbackSettings.setTimeout(100000);
             callbackSettings.setSaveUrl("https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157123434d4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286");
@@ -158,4 +136,4 @@ class CreateDocument {
     }
 }
 
-CreateDocument.execute();
+CoEditDocument.execute();
