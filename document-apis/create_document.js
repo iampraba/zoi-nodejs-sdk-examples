@@ -78,6 +78,7 @@ class CreateDocument {
             documentDefaults.setOrientation("landscape");
 
             documentDefaults.setMargin(margin);
+            documentDefaults.setLanguage("ta");
 
             createDocumentParameters.setDocumentDefaults(documentDefaults);
 
