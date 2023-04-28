@@ -8,10 +8,10 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const PreviewResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/preview_response").PreviewResponse;
-const SheetPreviewParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/sheet_preview_parameters").SheetPreviewParameters;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
+const SheetPreviewResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_preview_response").SheetPreviewResponse;
+const SheetPreviewParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_preview_parameters").SheetPreviewParameters;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
 
 class PreviewSheet {
 
@@ -39,7 +39,7 @@ class PreviewSheet {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var previewParameters = new SheetPreviewParameters();
 
             previewParameters.setUrl("https://demo.office-integrator.com/samples/sheet/Contact_List.xlsx");
@@ -68,11 +68,9 @@ class PreviewSheet {
     
                 //Get the api response object from responseObject
                 let previewResponseObject = responseObject.object;
-
-                console.log("\nStatus Code: ", previewResponseObject);
     
                 if(previewResponseObject != null){
-                    if(previewResponseObject instanceof PreviewResponse){
+                    if(previewResponseObject instanceof SheetPreviewResponse){
                         console.log("\nSheet session ID - " + previewResponseObject.getSessionId());
                         console.log("\nSheet document ID - " + previewResponseObject.getDocumentId());
                         console.log("\nSheet preview URL - " + previewResponseObject.getPreviewUrl());

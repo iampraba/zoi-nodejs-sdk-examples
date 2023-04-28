@@ -8,10 +8,11 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_parameters").CreateDocumentParameters;
 const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
-const DocumentDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_delete_success_response").DocumentDeleteSuccessResponse;
+const SessionMeta = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/session_meta").SessionMeta;
+const AllSessionsResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/all_sessions_response").AllSessionsResponse;
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 
-class DeleteDocument {
+class GetAllSessions {
 
     //Include zoi-nodejs-sdk package in your package json and the execute this code.
 
@@ -44,9 +45,9 @@ class DeleteDocument {
 
             var documentId = createResponse.object.getDocumentId();
 
-            console.log("\nCreated a new document to demonstrate the document delete api. Created document ID - " + documentId);
+            console.log("\nCreated a new document to demonstrate get all session details api. Created document ID - " + documentId);
 
-            var responseObject = await sdkOperations.deleteDocument(documentId);
+            var responseObject = await sdkOperations.getAllSessions(documentId);
 
             if(responseObject != null) {
                 //Get the status code from response
@@ -57,8 +58,26 @@ class DeleteDocument {
     
                 if(writerResponseObject != null){
                     //TODO: Need to fix object type issue
-                    if(writerResponseObject instanceof DocumentDeleteSuccessResponse){
-                        console.log("\nDocument delete status - " + writerResponseObject.getDocumentDeleted());
+                    if(writerResponseObject instanceof AllSessionsResponse ){
+                        console.log("\nDocument ID - " + writerResponseObject.getDocumentId());
+                        console.log("\nDocument Name - " + writerResponseObject.getDocumentName());
+                        console.log("\nDocument Type - " + writerResponseObject.getDocumentType());
+                        console.log("\nDocument Created Time - " + writerResponseObject.getCreatedTime());
+                        console.log("\nDocument Created Timestamp - " + writerResponseObject.getCreatedTimeMs());
+                        console.log("\nDocument Expiry Time - " + writerResponseObject.getExpiresOn());
+                        console.log("\nDocument Expiry Timestamp - " + writerResponseObject.getExpiresOnMs());
+                        var sessions = writerResponseObject.getSessions() || [];
+
+                        for (let index = 0; index < sessions.length; index++) {
+                            const session = sessions[index];
+
+                            if (session instanceof SessionMeta) {
+                                console.log("\nSession Status - " + session.getStatus());
+                                console.log("\nSession URL - " + session.getInfo().getSessionUrl());
+                                console.log("\nSession User ID - " + session.getUserInfo().getUserId());
+                                console.log("\nSession Display Name - " + session.getUserInfo().getDisplayName());
+                            }
+                        }
                     } else if (writerResponseObject instanceof InvaildConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
@@ -72,4 +91,4 @@ class DeleteDocument {
     }
 }
 
-DeleteDocument.execute();
+GetAllSessions.execute();

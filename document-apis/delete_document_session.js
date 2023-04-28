@@ -6,10 +6,10 @@ const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilde
 const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 
-const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_parameters").CreateDocumentParameters;
-const SessionDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/session_delete_success_response").SessionDeleteSuccessResponse;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
+const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_parameters").CreateDocumentParameters;
+const DocumentSessionDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_session_delete_success_response").DocumentSessionDeleteSuccessResponse;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
 
 class DeleteDocumentSession {
 
@@ -38,7 +38,7 @@ class DeleteDocumentSession {
 
         try {
             var createDocumentParameters = new CreateDocumentParameters();
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
 
             var createResponse = await sdkOperations.createDocument(createDocumentParameters);
 
@@ -56,8 +56,8 @@ class DeleteDocumentSession {
                 let writerResponseObject = responseObject.object;
     
                 if(writerResponseObject != null){
-                    if(writerResponseObject instanceof SessionDeleteSuccessResponse){
-                        console.log("\nSession delete status - " + writerResponseObject.getSessionDelete());
+                    if(writerResponseObject instanceof DocumentSessionDeleteSuccessResponse){
+                        console.log("\nSession delete status - " + writerResponseObject.getSessionDeleted());
                     } else if (writerResponseObject instanceof InvaildConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {

@@ -6,10 +6,10 @@ const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilde
 const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 
-const FileDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/file_delete_success_response").FileDeleteSuccessResponse;
-const CreatePresentationParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_presentation_parameters").CreatePresentationParameters;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const FileDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/file_delete_success_response").FileDeleteSuccessResponse;
+const CreatePresentationParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_presentation_parameters").CreatePresentationParameters;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 
 class DeletePresentation {
 
@@ -37,7 +37,7 @@ class DeletePresentation {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var createPresentationParameters = new CreatePresentationParameters();
 
             var newPresentationCreateResponse = await sdkOperations.createPresentation(createPresentationParameters);

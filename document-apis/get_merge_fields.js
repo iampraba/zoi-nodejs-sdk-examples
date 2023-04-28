@@ -8,10 +8,10 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const MergeFieldsResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/merge_fields_response").MergeFieldsResponse;
-const GetMergeFieldsParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/get_merge_fields_parameters").GetMergeFieldsParameters;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
+const MergeFieldsResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/merge_fields_response").MergeFieldsResponse;
+const GetMergeFieldsParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/get_merge_fields_parameters").GetMergeFieldsParameters;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
 
 class GetFields {
 
@@ -39,7 +39,7 @@ class GetFields {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var parameter = new GetMergeFieldsParameters();
 
             parameter.setFileUrl("https://demo.office-integrator.com/zdocs/OfferLetter.zdoc");

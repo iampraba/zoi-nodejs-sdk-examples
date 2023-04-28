@@ -6,9 +6,9 @@ const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
 
-const PlanDetails = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/plan_details").PlanDetails;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
+const PlanDetails = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/plan_details").PlanDetails;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
 
 class GetPlanDetails {
 
@@ -36,7 +36,7 @@ class GetPlanDetails {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var responseObject = await sdkOperations.getPlanDetails();
 
             if(responseObject != null) {

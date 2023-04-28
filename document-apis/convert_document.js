@@ -8,11 +8,11 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const FileBodyWrapper = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/file_body_wrapper").FileBodyWrapper;
-const DocumentConversionParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_conversion_parameters").DocumentConversionParameters;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-const DocumentConversionOutputOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_conversion_output_options").DocumentConversionOutputOptions;
+const FileBodyWrapper = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/file_body_wrapper").FileBodyWrapper;
+const DocumentConversionParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_conversion_parameters").DocumentConversionParameters;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const DocumentConversionOutputOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_conversion_output_options").DocumentConversionOutputOptions;
 
 class ConvertDocument {
 
@@ -40,7 +40,7 @@ class ConvertDocument {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var documentConversionParameters = new DocumentConversionParameters();
 
             //Either use url as document source or attach the document in request body use below methods

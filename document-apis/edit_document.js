@@ -8,17 +8,17 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const Margin = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/margin").Margin;
-const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/user_info").UserInfo;
-const UiOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/ui_options").UiOptions;
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info").DocumentInfo;
-const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/editor_settings").EditorSettings;
-const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_defaults").DocumentDefaults;
-const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/callback_settings").CallbackSettings;
-const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_response").CreateDocumentResponse;
-const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_parameters").CreateDocumentParameters;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
+const Margin = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/margin").Margin;
+const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info").UserInfo;
+const UiOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/ui_options").UiOptions;
+const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
+const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/editor_settings").EditorSettings;
+const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_defaults").DocumentDefaults;
+const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/callback_settings").CallbackSettings;
+const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_response").CreateDocumentResponse;
+const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_parameters").CreateDocumentParameters;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
 
 class EditDocument {
 
@@ -46,7 +46,7 @@ class EditDocument {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var createDocumentParameters = new CreateDocumentParameters();
 
             createDocumentParameters.setUrl("https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx");
@@ -82,6 +82,7 @@ class EditDocument {
 
             var documentDefaults = new DocumentDefaults();
 
+            documentDefaults.setLanguage("ta");
             documentDefaults.setTrackChanges("enabled");
 
             createDocumentParameters.setDocumentDefaults(documentDefaults);

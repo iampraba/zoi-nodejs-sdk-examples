@@ -7,11 +7,11 @@ const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignat
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 
 const CreateSheetParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_sheet_parameters").CreateSheetParameters;
-const FileDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/file_delete_success_response").FileDeleteSuccessResponse;
 const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const SessionMeta = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/session_meta").SessionMeta;
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 
-class DeleteSheet {
+class GetSessionDetail {
 
     //Include zoi-nodejs-sdk package in your package json and the execute this code.
 
@@ -38,27 +38,30 @@ class DeleteSheet {
 
         try {
             var sdkOperations = new V1Operations();
-            var createSheetParameters = new CreateSheetParameters();
+            var parameters = new CreateSheetParameters();
 
-            var newSessionObject = await sdkOperations.createSheet(createSheetParameters);
-            var documentId = newSessionObject.object.getDocumentId();
+            var createResponse = await sdkOperations.createSheet(parameters);
 
-            console.log("\nSheet id to be deleted - ", documentId);
+            var sessionId = createResponse.object.getSessionId();
 
-            var responseObject = await sdkOperations.deleteSheet(documentId);
+            console.log("\nCreated a new sheet to demonstrate get session details api. Created session ID - " + sessionId);
+
+            var responseObject = await sdkOperations.getSheetSession(sessionId);
 
             if(responseObject != null) {
                 //Get the status code from response
                 console.log("\nStatus Code: " + responseObject.statusCode);
     
                 //Get the api response object from responseObject
-                let sheetResponseObject = responseObject.object;
-
-                if(sheetResponseObject != null){
-                    if(sheetResponseObject instanceof FileDeleteSuccessResponse){
-                        console.log("\nSheet delete status - " + sheetResponseObject.getDocDelete());
-                    } else if (sheetResponseObject instanceof InvaildConfigurationException) {
-                        console.log("\nInvalid configuration exception. Exception json - ", sheetResponseObject);
+                let sheetResponse = responseObject.object;
+    
+                if(sheetResponse != null){
+                    //TODO: Need to fix object type issue
+                    if(sheetResponse instanceof SessionMeta ){
+                        console.log("\nSession Status - " + sheetResponse.getStatus());
+                        console.log("\nSession Expires On - " + sheetResponse.getInfo().getExpiresOn());
+                    } else if (sheetResponse instanceof InvaildConfigurationException) {
+                        console.log("\nInvalid configuration exception. Exception json - ", sheetResponse);
                     } else {
                         console.log("\nRequest not completed successfullly");
                     }
@@ -70,4 +73,4 @@ class DeleteSheet {
     }
 }
 
-DeleteSheet.execute();
+GetSessionDetail.execute();
