@@ -8,14 +8,14 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/user_info").UserInfo;
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info").DocumentInfo;
-const ShowCallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/show_callback_settings").ShowCallbackSettings;
-const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_response").CreateDocumentResponse;
-const ZohoShowEditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/zoho_show_editor_settings").ZohoShowEditorSettings;
-const CreatePresentationParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_presentation_parameters").CreatePresentationParameters;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info").UserInfo;
+const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
+const ShowCallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/show_callback_settings").ShowCallbackSettings;
+const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_response").CreateDocumentResponse;
+const ZohoShowEditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/zoho_show_editor_settings").ZohoShowEditorSettings;
+const CreatePresentationParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_presentation_parameters").CreatePresentationParameters;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 
 class EditPresentation {
 
@@ -43,7 +43,7 @@ class EditPresentation {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var createPresentationParameters = new CreatePresentationParameters();
             
             var documentInfo = new DocumentInfo();

@@ -8,16 +8,16 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const Margin = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/margin").Margin;
-const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/user_info").UserInfo;
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info").DocumentInfo;
-const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/editor_settings").EditorSettings;
-const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_defaults").DocumentDefaults;
-const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/callback_settings").CallbackSettings;
-const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_response").CreateDocumentResponse;
-const MailMergeTemplateParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/mail_merge_template_parameters").MailMergeTemplateParameters;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const Margin = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/margin").Margin;
+const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info").UserInfo;
+const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
+const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/editor_settings").EditorSettings;
+const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_defaults").DocumentDefaults;
+const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/callback_settings").CallbackSettings;
+const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_response").CreateDocumentResponse;
+const MailMergeTemplateParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/mail_merge_template_parameters").MailMergeTemplateParameters;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 
 class CreateMergeTemplate {
 
@@ -45,7 +45,7 @@ class CreateMergeTemplate {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var templateParameters = new MailMergeTemplateParameters();
             
             //Either use url as document source or attach the document in request body use below methods

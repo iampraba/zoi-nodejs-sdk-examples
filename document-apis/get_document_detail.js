@@ -6,12 +6,12 @@ const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilde
 const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 
-const CreateSheetParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_sheet_parameters").CreateSheetParameters;
-const FileDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/file_delete_success_response").FileDeleteSuccessResponse;
+const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_parameters").CreateDocumentParameters;
 const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const DocumentMeta = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_meta").DocumentMeta;
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 
-class DeleteSheet {
+class GetDocumentDetail {
 
     //Include zoi-nodejs-sdk package in your package json and the execute this code.
 
@@ -38,27 +38,36 @@ class DeleteSheet {
 
         try {
             var sdkOperations = new V1Operations();
-            var createSheetParameters = new CreateSheetParameters();
+            var createDocumentParameters = new CreateDocumentParameters();
 
-            var newSessionObject = await sdkOperations.createSheet(createSheetParameters);
-            var documentId = newSessionObject.object.getDocumentId();
+            var createResponse = await sdkOperations.createDocument(createDocumentParameters);
 
-            console.log("\nSheet id to be deleted - ", documentId);
+            var documentId = createResponse.object.getDocumentId();
 
-            var responseObject = await sdkOperations.deleteSheet(documentId);
+            console.log("\nCreated a new document to demonstrate get document details api. Created document ID - " + documentId);
+
+            var responseObject = await sdkOperations.getDocumentInfo(documentId);
 
             if(responseObject != null) {
                 //Get the status code from response
                 console.log("\nStatus Code: " + responseObject.statusCode);
     
                 //Get the api response object from responseObject
-                let sheetResponseObject = responseObject.object;
-
-                if(sheetResponseObject != null){
-                    if(sheetResponseObject instanceof FileDeleteSuccessResponse){
-                        console.log("\nSheet delete status - " + sheetResponseObject.getDocDelete());
-                    } else if (sheetResponseObject instanceof InvaildConfigurationException) {
-                        console.log("\nInvalid configuration exception. Exception json - ", sheetResponseObject);
+                let writerResponseObject = responseObject.object;
+    
+                if(writerResponseObject != null){
+                    //TODO: Need to fix object type issue
+                    if(writerResponseObject instanceof DocumentMeta ){
+                        console.log("\nDocument document ID - " + writerResponseObject.getDocumentId());
+                        console.log("\nDocument Name - " + writerResponseObject.getDocumentName());
+                        console.log("\nDocument Type - " + writerResponseObject.getDocumentType());
+                        console.log("\nDocument Collaborators Count - " + writerResponseObject.getCollaboratorsCount());
+                        console.log("\nDocument Created Time - " + writerResponseObject.getCreatedTime());
+                        console.log("\nDocument Created Timestamp - " + writerResponseObject.getCreatedTimeMs());
+                        console.log("\nDocument Expiry Time - " + writerResponseObject.getExpiresOn());
+                        console.log("\nDocument Expiry Timestamp - " + writerResponseObject.getExpiresOnMs());
+                    } else if (writerResponseObject instanceof InvaildConfigurationException) {
+                        console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
                     }
@@ -70,4 +79,4 @@ class DeleteSheet {
     }
 }
 
-DeleteSheet.execute();
+GetDocumentDetail.execute();

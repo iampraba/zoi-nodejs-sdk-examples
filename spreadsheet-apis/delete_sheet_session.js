@@ -6,10 +6,10 @@ const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilde
 const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 
-const CreateSheetParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_sheet_parameters").CreateSheetParameters;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-const SessionDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/session_delete_success_response").SessionDeleteSuccessResponse;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const CreateSheetParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_sheet_parameters").CreateSheetParameters;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const SessionDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/session_delete_success_response").SessionDeleteSuccessResponse;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 
 class DeleteSheetSession {
 
@@ -37,7 +37,7 @@ class DeleteSheetSession {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var createSheetParameters = new CreateSheetParameters();
 
             var newSessionObject = await sdkOperations.createSheet(createSheetParameters);

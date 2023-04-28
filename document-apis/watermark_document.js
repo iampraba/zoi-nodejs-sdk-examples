@@ -8,11 +8,11 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const FileBodyWrapper = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/file_body_wrapper").FileBodyWrapper;
-const WatermarkSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/watermark_settings").WatermarkSettings;
-const WatermarkParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/watermark_parameters").WatermarkParameters;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
+const FileBodyWrapper = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/file_body_wrapper").FileBodyWrapper;
+const WatermarkSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/watermark_settings").WatermarkSettings;
+const WatermarkParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/watermark_parameters").WatermarkParameters;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
 
 class WatermarkDocument {
 
@@ -40,7 +40,7 @@ class WatermarkDocument {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var watermarkParameters = new WatermarkParameters();
 
             watermarkParameters.setUrl("https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx");
@@ -81,9 +81,9 @@ class WatermarkDocument {
                     //Check if expected FileBodyWrapper instance is received
                     if(writerResponseObject instanceof FileBodyWrapper) {
                         var watermarkDocument = writerResponseObject.getFile();
-                        var outputFilePath = __dirname + "/sample_documents/watermark_output.pdf";
+                        var outputFilePath = __dirname + "/sample_documents/watermark_output.docx";
 
-                        if (convertedDowatermarkDocumentcument instanceof StreamWrapper) {
+                        if (watermarkDocument instanceof StreamWrapper) {
                             fs.writeFileSync(outputFilePath, watermarkDocument.getStream());
                             console.log("\nCheck watermarked pdf output file in file path - ", outputFilePath);
                         }

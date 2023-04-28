@@ -8,11 +8,11 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const MailMergeWebhookSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/mail_merge_webhook_settings").MailMergeWebhookSettings;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-const MergeAndDeliverViaWebhookParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/merge_and_deliver_via_webhook_parameters").MergeAndDeliverViaWebhookParameters;
-const MergeAndDeliverViaWebhookSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/merge_and_deliver_via_webhook_success_response").MergeAndDeliverViaWebhookSuccessResponse;
+const MailMergeWebhookSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/mail_merge_webhook_settings").MailMergeWebhookSettings;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const MergeAndDeliverViaWebhookParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/merge_and_deliver_via_webhook_parameters").MergeAndDeliverViaWebhookParameters;
+const MergeAndDeliverViaWebhookSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/merge_and_deliver_via_webhook_success_response").MergeAndDeliverViaWebhookSuccessResponse;
 
 class MergeAndDeliver {
 
@@ -40,7 +40,7 @@ class MergeAndDeliver {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var parameters = new MergeAndDeliverViaWebhookParameters();
 
             parameters.setFileUrl("https://demo.office-integrator.com/zdocs/OfferLetter.zdoc");

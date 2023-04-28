@@ -6,15 +6,15 @@ const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilde
 const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 
-const UiOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/ui_options").UiOptions;
-const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/user_info").UserInfo;
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info").DocumentInfo;
-const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_defaults").DocumentDefaults;
-const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/callback_settings").CallbackSettings;
-const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_response").CreateDocumentResponse;
-const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_document_parameters").CreateDocumentParameters;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
+const UiOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/ui_options").UiOptions;
+const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info").UserInfo;
+const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
+const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_defaults").DocumentDefaults;
+const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/callback_settings").CallbackSettings;
+const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_response").CreateDocumentResponse;
+const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_parameters").CreateDocumentParameters;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
 
 class CoEditDocument {
 
@@ -42,7 +42,7 @@ class CoEditDocument {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var createDocumentParameters = new CreateDocumentParameters();
 
             var documentInfo = new DocumentInfo();

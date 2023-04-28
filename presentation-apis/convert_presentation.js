@@ -9,11 +9,11 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
 const FileBodyWrapper = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/file_body_wrapper").FileBodyWrapper;
+const ConvertPresentationParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/convert_presentation_parameters").ConvertPresentationParameters;
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
-const MergeAndDownloadDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/merge_and_download_document_parameters").MergeAndDownloadDocumentParameters;
 
-class MergeAndDownload {
+class ConvertPresentation {
 
     //Include zoi-nodejs-sdk package in your package json and the execute this code.
 
@@ -29,7 +29,7 @@ class MergeAndDownload {
 
         await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
 
-        console.log("\nSDK initialized successfully.");
+        console.log("SDK initialized successfully.");
     }
 
     static async execute() {
@@ -40,62 +40,41 @@ class MergeAndDownload {
 
         try {
             var sdkOperations = new V1Operations();
-            var parameters = new MergeAndDownloadDocumentParameters();
+            var conversionParameters = new ConvertPresentationParameters();
 
-            parameters.setFileUrl("https://demo.office-integrator.com/zdocs/OfferLetter.zdoc");
-            parameters.setMergeDataJsonUrl("https://demo.office-integrator.com/data/candidates.json");
+            //Either use url as document source or attach the document in request body use below methods
+            conversionParameters.setUrl("https://demo.office-integrator.com/samples/show/Zoho_Show.pptx");
 
-            // var fileName = "OfferLetter.zdoc";
-            // var filePath = __dirname + "/sample_documents/OfferLetter.zdoc";
+            // var fileName = "Graphic-Design-Proposal.docx";
+            // var filePath = __dirname + "/sample_documents/Zoho_Show.pptx";
             // var fileStream = fs.readFileSync(filePath);
             // var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
-            
-            parameters.setPassword("***");
-            parameters.setOutputFormat("pdf");
-            // parameters.setFileContent(streamWrapper);
+            // var streamWrapper = new StreamWrapper(null, null, filePath)
 
-            // var jsonFileName = "candidates.json";
-            // var jsonFilePath = __dirname + "/sample_documents/candidates.json";
-            // var jsonFileStream = fs.readFileSync(jsonFilePath);
-            // var jsonStreamWrapper = new StreamWrapper(jsonFileName, jsonFileStream, jsonFilePath);
+            // conversionParameters.setDocument(streamWrapper);
 
-            // parameters.setMergeDataJsonContent(jsonStreamWrapper);
+            conversionParameters.setFormat("pdf");
 
-            /*
-            var mergeData = new Map();
-
-            parameters.setMergeData(mergeData);
-
-            var csvFileName = "csv_data_source.csv";
-            var csvFilePath = __dirname + "/sample_documents/csv_data_source.csv";
-            var csvFileStream = fs.readFileSync(csvFilePath);
-            var csvStreamWrapper = new StreamWrapper(csvFileName, csvFileStream, csvFilePath);
-
-            parameters.setMergeDataCsvContent(csvStreamWrapper);
-
-            parameters.setMergeDataCsvUrl("https://demo.office-integrator.com/data/csv_data_source.csv");
-            parameters.setMergeDataJsonUrl("https://demo.office-integrator.com/zdocs/json_data_source.json");
-            */
-
-            var responseObject = await sdkOperations.mergeAndDownloadDocument(parameters);
+            var responseObject = await sdkOperations.convertPresentation(conversionParameters);
 
             if(responseObject != null) {
                 console.log("\nStatus Code: " + responseObject.statusCode);
     
-                let writerResponseObject = responseObject.object;
-    
-                if(writerResponseObject != null) {
-                    if(writerResponseObject instanceof FileBodyWrapper) {
-                        var convertedDocument = writerResponseObject.getFile();
+                //Get the api response object from responseObject
+                let showResponseObject = responseObject.object;
+
+                if(showResponseObject != null) {
+                    if(showResponseObject instanceof FileBodyWrapper) {
+                        var convertedDocument = showResponseObject.getFile();
 
                         if (convertedDocument instanceof StreamWrapper) {
-                            var outputFilePath = __dirname + "/sample_documents/merge_and_download.pdf";
+                            var outputFilePath = __dirname + "/sample_documents/conversion_output.pdf";
 
                             fs.writeFileSync(outputFilePath, convertedDocument.getStream());
-                            console.log("\nCheck merged output file in file path - ", outputFilePath);
+                            console.log("\nCheck converted output file in file path - ", outputFilePath);
                         }
-                    } else if (writerResponseObject instanceof InvaildConfigurationException) {
-                        console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
+                    } else if (showResponseObject instanceof InvaildConfigurationException) {
+                        console.log("\nInvalid configuration exception. Exception json - ", showResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
                     }
@@ -107,4 +86,4 @@ class MergeAndDownload {
     }
 }
 
-MergeAndDownload.execute();
+ConvertPresentation.execute();

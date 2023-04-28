@@ -6,12 +6,15 @@ const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilde
 const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
 const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
 
-const CreateSheetParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_sheet_parameters").CreateSheetParameters;
-const FileDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/file_delete_success_response").FileDeleteSuccessResponse;
-const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const fs = require("fs");
+const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
+const FileBodyWrapper = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/file_body_wrapper").FileBodyWrapper;
+const SheetConversionParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_conversion_parameters").SheetConversionParameters;
+const SheetConversionOutputOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_conversion_output_options").SheetConversionOutputOptions;
 const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
 
-class DeleteSheet {
+class ConvertSheet {
 
     //Include zoi-nodejs-sdk package in your package json and the execute this code.
 
@@ -27,7 +30,7 @@ class DeleteSheet {
 
         await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
 
-        console.log("\nSDK initialized successfully.");
+        console.log("SDK initialized successfully.");
     }
 
     static async execute() {
@@ -38,25 +41,44 @@ class DeleteSheet {
 
         try {
             var sdkOperations = new V1Operations();
-            var createSheetParameters = new CreateSheetParameters();
+            var sheetConversionParameters = new SheetConversionParameters();
 
-            var newSessionObject = await sdkOperations.createSheet(createSheetParameters);
-            var documentId = newSessionObject.object.getDocumentId();
+            //Either use url as document source or attach the document in request body use below methods
+            sheetConversionParameters.setUrl("https://demo.office-integrator.com/samples/sheet/Contact_List.xlsx");
 
-            console.log("\nSheet id to be deleted - ", documentId);
+            // var fileName = "Contact_List.xlsx";
+            // var filePath = __dirname + "/sample_documents/Contact_List.xlsx";
+            // var fileStream = fs.readFileSync(filePath);
+            // var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
+            // var streamWrapper = new StreamWrapper(null, null, filePath)
 
-            var responseObject = await sdkOperations.deleteSheet(documentId);
+            // sheetConversionParameters.setDocument(streamWrapper);
+
+            var outputOptions = new SheetConversionOutputOptions();
+
+            outputOptions.setFormat("pdf");
+            outputOptions.setDocumentName("ConvertedSheet.pdf");
+
+            sheetConversionParameters.setOutputOptions(outputOptions);
+
+            var responseObject = await sdkOperations.convertSheet(sheetConversionParameters);
 
             if(responseObject != null) {
-                //Get the status code from response
                 console.log("\nStatus Code: " + responseObject.statusCode);
     
                 //Get the api response object from responseObject
                 let sheetResponseObject = responseObject.object;
 
-                if(sheetResponseObject != null){
-                    if(sheetResponseObject instanceof FileDeleteSuccessResponse){
-                        console.log("\nSheet delete status - " + sheetResponseObject.getDocDelete());
+                if(sheetResponseObject != null) {
+                    if(sheetResponseObject instanceof FileBodyWrapper) {
+                        var convertedDocument = sheetResponseObject.getFile();
+
+                        if (convertedDocument instanceof StreamWrapper) {
+                            var outputFilePath = __dirname + "/sample_documents/conversion_output.pdf";
+
+                            fs.writeFileSync(outputFilePath, convertedDocument.getStream());
+                            console.log("\nCheck converted output file in file path - ", outputFilePath);
+                        }
                     } else if (sheetResponseObject instanceof InvaildConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", sheetResponseObject);
                     } else {
@@ -70,4 +92,4 @@ class DeleteSheet {
     }
 }
 
-DeleteSheet.execute();
+ConvertSheet.execute();

@@ -8,11 +8,11 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const PreviewResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/preview_response").PreviewResponse;
-const PreviewParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/preview_parameters").PreviewParameters;
-const PreviewDocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/preview_document_info").PreviewDocumentInfo;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
+const PreviewResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/preview_response").PreviewResponse;
+const PreviewParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/preview_parameters").PreviewParameters;
+const PreviewDocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/preview_document_info").PreviewDocumentInfo;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
 
 class PreviewDocument {
 
@@ -40,7 +40,7 @@ class PreviewDocument {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var previewParameters = new PreviewParameters();
 
             previewParameters.setUrl("https://demo.office-integrator.com/zdocs/Graphic-Design-Proposal.docx");

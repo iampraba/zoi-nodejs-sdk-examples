@@ -8,14 +8,14 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info").DocumentInfo;
-const SheetUserSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/sheet_user_settings").SheetUserSettings;
-const SheetEditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/sheet_editor_settings").SheetEditorSettings;
-const CreateSheetResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_sheet_response").CreateSheetResponse;
-const CreateSheetParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/create_sheet_parameters").CreateSheetParameters;
-const SheetCallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/sheet_callback_settings").SheetCallbackSettings;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
+const SheetUserSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_user_settings").SheetUserSettings;
+const SheetEditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_editor_settings").SheetEditorSettings;
+const CreateSheetResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_sheet_response").CreateSheetResponse;
+const CreateSheetParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_sheet_parameters").CreateSheetParameters;
+const SheetCallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_callback_settings").SheetCallbackSettings;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 
 class EditSheet {
 
@@ -43,7 +43,7 @@ class EditSheet {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var createSheetParameters = new CreateSheetParameters();
 
             createSheetParameters.setUrl("https://demo.office-integrator.com/samples/sheet/Contact_List.xlsx");

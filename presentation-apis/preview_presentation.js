@@ -8,11 +8,11 @@ const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").In
 
 const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/document_info").DocumentInfo;
-const PreviewResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/preview_response").PreviewResponse;
-const PresentationPreviewParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/presentation_preview_parameters").PresentationPreviewParameters;
-const OfficeIntegratorSDKOperations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/office_integrator_sdk_operations").OfficeIntegratorSDKOperations;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/office_integrator_sdk/invaild_configuration_exception").InvaildConfigurationException;
+const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
+const PreviewResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/preview_response").PreviewResponse;
+const PresentationPreviewParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/presentation_preview_parameters").PresentationPreviewParameters;
+const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
 
 class PreviewPresentation {
 
@@ -40,7 +40,7 @@ class PreviewPresentation {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new OfficeIntegratorSDKOperations();
+            var sdkOperations = new V1Operations();
             var previewParameters = new PresentationPreviewParameters();
 
             previewParameters.setUrl("https://demo.office-integrator.com/samples/show/Zoho_Show.pptx");
