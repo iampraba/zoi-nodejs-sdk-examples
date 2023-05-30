@@ -117,3 +117,6 @@ Thumbs.db
 *.swp
 *.swo
 *.orig
+
+### IntelliJ IDEA ###
+.idea/*

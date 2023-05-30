@@ -1,8 +1,8 @@
 {
-  "name": "zoi-nodejs-sdk-demo-app",
-  "title": "Zoho Office Integrator NodeJs demo application",
+  "name": "zoi-nodejs-sdk-examples",
+  "title": "Zoho Office Integrator NodeJs SDK Examples",
   "version": "1.0.0",
-  "description": "",
+  "description": "This code repository showcases examples that illustrate the utilization of the Node.js SDK for Zoho Office Integrator in order to engage with Office Suite Editors.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
