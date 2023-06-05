@@ -16,8 +16,8 @@ You can include the SDK to your project using:
     git clone https://github.com/iampraba/zoi-nodejs-sdk-examples.git
     ```
 
-- Install **NodeJS SDK** and other dependencies 
-    - Navigate to the folder **zoi-nodejs-sdk-demo-app**
+- Install [**NodeJS SDK**](https://www.npmjs.com/package/zoi-nodejs-sdk) and other dependencies 
+    - Navigate to the folder **zoi-nodejs-sdk-examples**
         ```sh
         cd zoi-nodejs-sdk-examples
         ```
