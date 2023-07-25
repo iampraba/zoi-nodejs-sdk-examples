@@ -10,6 +10,8 @@
   "author": "iampraba <praburaji93@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
     "zoi-nodejs-sdk": "^1.1.0"
   }
 }

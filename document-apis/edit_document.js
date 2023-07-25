@@ -123,7 +123,13 @@ class EditDocument {
             saveUrlParams.set("auth_token", "1234");
             saveUrlParams.set("id", "123131");
 
+            var saveUrlHeaders = new Map();
+
+            saveUrlHeaders.set("header1", "value1");
+            saveUrlHeaders.set("header2", "value2");
+
             callbackSettings.setSaveUrlParams(saveUrlParams);
+            callbackSettings.setSaveUrlHeaders(saveUrlHeaders);
 
             callbackSettings.setRetries(1);
             callbackSettings.setTimeout(10000);

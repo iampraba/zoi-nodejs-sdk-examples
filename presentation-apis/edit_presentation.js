@@ -10,7 +10,7 @@ const fs = require("fs");
 const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
 const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info").UserInfo;
 const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
-const ShowCallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/show_callback_settings").ShowCallbackSettings;
+const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/callback_settings").CallbackSettings;
 const ZohoShowEditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/zoho_show_editor_settings").ZohoShowEditorSettings;
 const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_response").CreateDocumentResponse;
 const CreatePresentationParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_presentation_parameters").CreatePresentationParameters;
@@ -85,8 +85,20 @@ class EditPresentation {
 
             createPresentationParameters.setPermissions(permissions);
 
-            var callbackSettings = new ShowCallbackSettings();
+            var callbackSettings = new CallbackSettings();
+            var saveUrlParams = new Map();
 
+            saveUrlParams.set("auth_token", "1234");
+            saveUrlParams.set("id", "123131");
+
+            /*var saveUrlHeaders = new Map();
+
+            saveUrlHeaders.set("header1", "value1");
+            saveUrlHeaders.set("header2", "value2");
+
+            callbackSettings.setSaveUrlHeaders(saveUrlHeaders);*/
+
+            callbackSettings.setSaveUrlParams(saveUrlParams);
             callbackSettings.setSaveFormat("pptx");
             callbackSettings.setSaveUrl("https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157a25e63fc4dfd4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286");
 

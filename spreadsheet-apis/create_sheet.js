@@ -79,9 +79,15 @@ class CreateSheet {
             saveUrlParams.set("auth_token", "1234");
             saveUrlParams.set("id", "123131");
 
+            var saveUrlHeaders = new Map();
+
+            saveUrlHeaders.set("header1", "value1");
+            saveUrlHeaders.set("header2", "value2");
+
             callbackSettings.setSaveFormat("xlsx");
             callbackSettings.setSaveUrlParams(saveUrlParams);
-            callbackSettings.setSaveUrl("https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157a25e63fc4dfd4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286");
+            callbackSettings.setSaveUrlHeaders(saveUrlHeaders);
+            callbackSettings.setSaveUrl("https://bc59556ab64f536be787aeca1dd36571.m.pipedream.net");
 
             createSheetParameters.setCallbackSettings(callbackSettings);
 
