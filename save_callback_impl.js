@@ -4,6 +4,9 @@ const multer = require('multer');
 const app = express();
 const upload = multer();
 
+/**
+ * This api end point is implementaed using expressjs.
+ */
 app.post('/zoho/file/uploader', upload.single('content'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
