@@ -1,4 +1,4 @@
-Save the [code](https://github.com/iampraba/zoi-php-sdk-examples/blob/main/save_callback_implementation/express-js/save_callback.js) in a file, for example, save_callback.js.
+Save the [code](https://raw.githubusercontent.com/iampraba/zoi-nodejs-sdk-examples/main/save-callback-implementation/express-js/save_callback.js) in a file, for example, save_callback.js.
 
 To run the following commands from your Mac terminal, you should have nodejs installed on you machine. 
 
