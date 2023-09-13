@@ -15,6 +15,8 @@ app.listen(port, () => {
 
   console.log(`\nMake a post request to this end point to test save callback from local file - http://localhost/${port}${callbackEndpoint}`);
 
+  console.log(`\nKeep the multipart key as content for file. If you send the file in different key then change the key in save_callback code as well before testing`);
+
   console.log(`\nYou should not use http://localhost/${port} as save_url in callback settings. You should only use it as publicly accessible(with your application domain) end point.`);
 });
 
