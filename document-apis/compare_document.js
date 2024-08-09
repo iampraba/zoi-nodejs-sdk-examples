@@ -1,36 +1,8 @@
-const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
-const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
-const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
-const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
-const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
-const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
-const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
-
-const fs = require("fs");
-const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const CompareDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/compare_document_response").CompareDocumentResponse;
-const CompareDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/compare_document_parameters").CompareDocumentParameters;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
-const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+import * as SDK from "@zoho/office-integrator-sdk";
+import { readFileSync } from 'fs';
+const __dirname = import.meta.dirname;
 
 class CompareDocument {
-
-    //Include zoi-nodejs-sdk package in your package json and the execute this code.
-
-    static async initializeSdk() {
-        let user = new UserSignature("john@zylker.com");
-        let environment = new Environment("https://api.office-integrator.com", null, null);
-        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
-        let logger = new LogBuilder()
-            .level(Levels.INFO)
-            .filePath("./app.log")
-            .build();
-        let initialize = await new InitializeBuilder();
-
-        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
-
-        console.log("\nSDK initialized successfully.");
-    }
 
     static async execute() {
         
@@ -39,23 +11,22 @@ class CompareDocument {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new V1Operations();
-            var compareDocumentParameters = new CompareDocumentParameters();
+            var sdkOperations = new SDK.V1.V1Operations();
+            var compareDocumentParameters = new SDK.V1.CompareDocumentParameters();
 
+            //Either use url as document source or attach the document in request body use below methods
             compareDocumentParameters.setUrl1("https://demo.office-integrator.com/zdocs/MS_Word_Document_v0.docx");
             compareDocumentParameters.setUrl2("https://demo.office-integrator.com/zdocs/MS_Word_Document_v1.docx");
 
             var file1Name = "MS_Word_Document_v0.docx";
             // var file1Path = __dirname + "/sample_documents/MS_Word_Document_v0.docx";
-            // var file1Stream = fs.readFileSync(file1Path);
-            // var stream1Wrapper = new StreamWrapper(file1Name, file1Stream, file1Path)
-            // var stream1Wrapper = new StreamWrapper(null, null, file1Path)
+            // var file1Stream = readFileSync(file1Path);
+            // var stream1Wrapper = new SDK.StreamWrapper(file1Name, file1Stream, file1Path);
 
             var file2Name = "MS_Word_Document_v1.docx";
             // var file2Path = __dirname + "/sample_documents/MS_Word_Document_v1.docx";
-            // var file2Stream = fs.readFileSync(file2Path);
-            // var stream2Wrapper = new StreamWrapper(file2Name, file2Stream, file2Path)
-            // var stream2Wrapper = new StreamWrapper(null, null, file2Path)
+            // var file2Stream = readFileSync(file2Path);
+            // var stream2Wrapper = new SDK.StreamWrapper(file2Name, file2Stream, file2Path);
             
             // compareDocumentParameters.setDocument1(stream1Wrapper);
             // compareDocumentParameters.setDocument2(stream2Wrapper);
@@ -74,10 +45,10 @@ class CompareDocument {
     
                 if(writerResponseObject != null) {
                     //Check if expected CompareDocumentResponse instance is received
-                    if(writerResponseObject instanceof CompareDocumentResponse) {
+                    if(writerResponseObject instanceof SDK.V1.CompareDocumentResponse) {
                         console.log("\nCompare URL - " + writerResponseObject.getCompareUrl());
                         console.log("\nDocument session delete URL - " + writerResponseObject.getSessionDeleteUrl());
-                    } else if (writerResponseObject instanceof InvaildConfigurationException) {
+                    } else if (writerResponseObject instanceof SDK.V1.InvalidConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
@@ -88,6 +59,34 @@ class CompareDocument {
             console.log("\nException while running sample code", error);
         }
     }
+
+    //Include office-integrator-sdk package in your package json and the execute this code.
+
+    static async initializeSdk() {
+
+        // Refer this help page for api end point domain details -  https://www.zoho.com/officeintegrator/api/v1/getting-started.html
+        let environment = await new SDK.ApiServer.Production("https://api.office-integrator.com");
+
+        let auth = new SDK.AuthBuilder()
+                        .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+                        .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
+                        .build();
+
+        let tokens = [ auth ];
+
+        //Sdk application log configuration
+        let logger = new SDK.LogBuilder()
+            .level(SDK.Levels.INFO)
+            //.filePath("<file absolute path where logs would be written>") //No I18N
+            .build();
+
+        let initialize = await new SDK.InitializeBuilder();
+
+        await initialize.environment(environment).tokens(tokens).logger(logger).initialize();
+
+        console.log("SDK initialized successfully.");
+    }
+
 }
 
 CompareDocument.execute();

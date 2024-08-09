@@ -1,41 +1,6 @@
-const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
-const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
-const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
-const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
-const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
-const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
-const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
-
-const Margin = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/margin").Margin;
-const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info").UserInfo;
-const UiOptions = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/ui_options").UiOptions;
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
-const EditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/editor_settings").EditorSettings;
-const DocumentDefaults = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_defaults").DocumentDefaults;
-const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/callback_settings").CallbackSettings;
-const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_response").CreateDocumentResponse;
-const CreateDocumentParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_parameters").CreateDocumentParameters;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
-const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+import * as SDK from "@zoho/office-integrator-sdk";
 
 class CreateDocument {
-
-    //Include zoi-nodejs-sdk package in your package json and the execute this code.
-
-    static async initializeSdk() {
-        let user = new UserSignature("john@zylker.com");
-        let environment = new Environment("https://api.office-integrator.com", null, null);
-        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
-        let logger = new LogBuilder()
-            .level(Levels.INFO)
-            .filePath("./app.log")
-            .build();
-        let initialize = await new InitializeBuilder();
-
-        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
-
-        console.log("SDK initialized successfully.");
-    }
 
     static async execute() {
         
@@ -44,10 +9,10 @@ class CreateDocument {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new V1Operations();
-            var createDocumentParameters = new CreateDocumentParameters();
+            var sdkOperations = new SDK.V1.V1Operations();
+            var createDocumentParameters = new SDK.V1.CreateDocumentParameters();
 
-            var documentInfo = new DocumentInfo();
+            var documentInfo = new SDK.V1.DocumentInfo();
 
             //Time value used to generate unique document everytime. You can replace based on your application.
             documentInfo.setDocumentId("" + new Date().getTime());
@@ -55,21 +20,21 @@ class CreateDocument {
 
             createDocumentParameters.setDocumentInfo(documentInfo);
 
-            var userInfo = new UserInfo();
+            var userInfo = new SDK.V1.UserInfo();
 
             userInfo.setUserId("1000");
             userInfo.setDisplayName("Prabakaran R");
 
             createDocumentParameters.setUserInfo(userInfo);
 
-            var margin = new Margin();
+            var margin = new SDK.V1.Margin();
 
             margin.setTop("2in");
             margin.setBottom("2in");
             margin.setLeft("2in");
             margin.setRight("2in");
 
-            var documentDefaults = new DocumentDefaults();
+            var documentDefaults = new SDK.V1.DocumentDefaults();
 
             documentDefaults.setFontSize(12);
             documentDefaults.setPaperSize("A4");
@@ -82,7 +47,7 @@ class CreateDocument {
 
             createDocumentParameters.setDocumentDefaults(documentDefaults);
 
-            var editorSettings = new EditorSettings();
+            var editorSettings = new SDK.V1.EditorSettings();
 
             editorSettings.setUnit("in");
             editorSettings.setLanguage("en");
@@ -90,7 +55,7 @@ class CreateDocument {
 
             createDocumentParameters.setEditorSettings(editorSettings);
 
-            var uiOptions = new UiOptions();
+            var uiOptions = new SDK.V1.UiOptions();
 
             uiOptions.setDarkMode("show");
             uiOptions.setFileMenu("show");
@@ -112,7 +77,7 @@ class CreateDocument {
 
             createDocumentParameters.setPermissions(permissions);
 
-            var callbackSettings = new CallbackSettings();
+            var callbackSettings = new SDK.V1.CallbackSettings();
             var saveUrlParams = new Map();
 
             saveUrlParams.set("auth_token", "1234");
@@ -145,14 +110,14 @@ class CreateDocument {
                 if(writerResponseObject != null){
     
                     //Check if expected CreateDocumentResponse instance is received
-                    if(writerResponseObject instanceof CreateDocumentResponse){
+                    if(writerResponseObject instanceof SDK.V1.CreateDocumentResponse){
                         console.log("\nDocument ID - " + writerResponseObject.getDocumentId());
                         console.log("\nDocument session ID - " + writerResponseObject.getSessionId());
                         console.log("\nDocument session URL - " + writerResponseObject.getDocumentUrl());
                         console.log("\nDocument save URL - " + writerResponseObject.getSaveUrl());
                         console.log("\nDocument delete URL - " + writerResponseObject.getDocumentDeleteUrl());
                         console.log("\nDocument session delete URL - " + writerResponseObject.getSessionDeleteUrl());
-                    } else if (writerResponseObject instanceof InvaildConfigurationException) {
+                    } else if (writerResponseObject instanceof SDK.V1.InvalidConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
@@ -163,6 +128,34 @@ class CreateDocument {
             console.log("\nException while running sample code", error);
         }
     }
+
+    //Include office-integrator-sdk package in your package json and the execute this code.
+
+    static async initializeSdk() {
+
+        // Refer this help page for api end point domain details -  https://www.zoho.com/officeintegrator/api/v1/getting-started.html
+        let environment = await new SDK.ApiServer.Production("https://api.office-integrator.com");
+
+        let auth = new SDK.AuthBuilder()
+                        .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+                        .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
+                        .build();
+
+        let tokens = [ auth ];
+
+        //Sdk application log configuration
+        let logger = new SDK.LogBuilder()
+            .level(SDK.Levels.INFO)
+            //.filePath("<file absolute path where logs would be written>") //No I18N
+            .build();
+
+        let initialize = await new SDK.InitializeBuilder();
+
+        await initialize.environment(environment).tokens(tokens).logger(logger).initialize();
+
+        console.log("SDK initialized successfully.");
+    }
+
 }
 
 CreateDocument.execute();

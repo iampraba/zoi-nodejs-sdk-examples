@@ -1,38 +1,6 @@
-const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
-const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
-const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
-const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
-const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
-const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
-const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
-
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
-const SheetUserSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_user_settings").SheetUserSettings;
-const SheetEditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_editor_settings").SheetEditorSettings;
-const CreateSheetResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_sheet_response").CreateSheetResponse;
-const CreateSheetParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_sheet_parameters").CreateSheetParameters;
-const SheetCallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/sheet_callback_settings").SheetCallbackSettings;
-const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+import * as SDK from "@zoho/office-integrator-sdk";
 
 class EditSheet {
-
-    //Include zoi-nodejs-sdk package in your package json and the execute this code.
-
-    static async initializeSdk() {
-        let user = new UserSignature("john@zylker.com");
-        let environment = new Environment("https://api.office-integrator.com", null, null);
-        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
-        let logger = new LogBuilder()
-            .level(Levels.INFO)
-            .filePath("./app.log")
-            .build();
-        let initialize = await new InitializeBuilder();
-
-        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
-
-        console.log("\nSDK initialized successfully.");
-    }
 
     static async execute() {
         
@@ -41,10 +9,10 @@ class EditSheet {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new V1Operations();
-            var createSheetParameters = new CreateSheetParameters();
+            var sdkOperations = new SDK.V1.V1Operations();
+            var createSheetParameters = new SDK.V1.CreateSheetParameters();
 
-            var documentInfo = new DocumentInfo();
+            var documentInfo = new SDK.V1.DocumentInfo();
 
             //To collaborate in existing document you need to provide the document id(e.g: 1000) alone is enough.
             //Note: Make sure the document already exist in Zoho server for below given document id.
@@ -55,13 +23,13 @@ class EditSheet {
 
             createSheetParameters.setDocumentInfo(documentInfo);
 
-            var userInfo = new SheetUserSettings();
+            var userInfo = new SDK.V1.SheetUserSettings();
 
             userInfo.setDisplayName("Prabakaran R");
 
             createSheetParameters.setUserInfo(userInfo);
 
-            var editorSettings = new SheetEditorSettings();
+            var editorSettings = new SDK.V1.SheetEditorSettings();
 
             editorSettings.setCountry("IN");
             editorSettings.setLanguage("en");
@@ -76,7 +44,7 @@ class EditSheet {
 
             createSheetParameters.setPermissions(permissions);
 
-            var callbackSettings = new SheetCallbackSettings();
+            var callbackSettings = new SDK.V1.SheetCallbackSettings();
             var saveUrlParams = new Map();
 
             saveUrlParams.set("auth_token", "1234");
@@ -100,15 +68,54 @@ class EditSheet {
                 if(sheetResponseObject != null){
 
                     //Check if expected CreateSheetResponse instance is received
-                    if(sheetResponseObject instanceof CreateSheetResponse){
+                    if(sheetResponseObject instanceof SDK.V1.CreateSheetResponse){
                         console.log("\nSpreadSheet ID - " + sheetResponseObject.getDocumentId());
-                        console.log("\nSpreadSheet session ID - " + sheetResponseObject.getSessionId());
-                        console.log("\nSpreadSheet session URL - " + sheetResponseObject.getDocumentUrl());
-                        console.log("\nSpreadSheet Grid View URL - " + sheetResponseObject.getGridviewUrl());
-                        console.log("\nSpreadSheet save URL - " + sheetResponseObject.getSaveUrl());
+                        console.log("\nSpreadSheet session 1 ID - " + sheetResponseObject.getSessionId());
+                        console.log("\nSpreadSheet session 1 URL - " + sheetResponseObject.getDocumentUrl());
+                        console.log("\nSpreadSheet session 1 Grid View URL - " + sheetResponseObject.getGridviewUrl());
+                        console.log("\nSpreadSheet session 1 save URL - " + sheetResponseObject.getSaveUrl());
+                        console.log("\nSpreadSheet session 1 delete URL - " + sheetResponseObject.getSessionDeleteUrl());
                         console.log("\nSpreadSheet delete URL - " + sheetResponseObject.getDocumentDeleteUrl());
-                        console.log("\nSpreadSheet session delete URL - " + sheetResponseObject.getSessionDeleteUrl());
-                    } else if (sheetResponseObject instanceof InvaildConfigurationException) {
+
+                        //Session 2 creation for collaboration demo
+                        var user2Info = new SDK.V1.SheetUserSettings();
+
+                        user2Info.setDisplayName("John");
+
+                        createSheetParameters.setUserInfo(user2Info);
+
+                        responseObject = await sdkOperations.createSheet(createSheetParameters);
+
+                        if(responseObject != null) {
+                            //Get the status code from response
+                            console.log("\nStatus Code: " + responseObject.statusCode);
+                
+                            //Get the api response object from responseObject
+                            var sheetSession2ResponseObject = responseObject.object;
+                
+                            if(sheetSession2ResponseObject != null){
+
+                                //Check if expected CreateSheetResponse instance is received
+                                if(sheetSession2ResponseObject instanceof SDK.V1.CreateSheetResponse){
+                                    console.log("\nSpreadSheet ID - " + sheetSession2ResponseObject.getDocumentId());
+                                    console.log("\nSpreadSheet session 2 ID - " + sheetSession2ResponseObject.getSessionId());
+                                    console.log("\nSpreadSheet session 2 URL - " + sheetSession2ResponseObject.getDocumentUrl());
+                                    console.log("\nSpreadSheet session 2 Grid View URL - " + sheetSession2ResponseObject.getGridviewUrl());
+                                    console.log("\nSpreadSheet session 2 save URL - " + sheetSession2ResponseObject.getSaveUrl());
+                                    console.log("\nSpreadSheet session 2 delete URL - " + sheetSession2ResponseObject.getSessionDeleteUrl());
+                                    console.log("\nSpreadSheet delete URL - " + sheetSession2ResponseObject.getDocumentDeleteUrl());
+                                } else if (sheetSession2ResponseObject instanceof SDK.V1.InvalidConfigurationException) {
+                                    console.log("\nInvalid configuration exception. Exception json - ", sheetSession2ResponseObject);
+                                } else {
+                                    console.log("\nRequest not completed successfullly");
+                                }
+                            } else if (sheetSession2ResponseObject instanceof SDK.V1.InvalidConfigurationException) {
+                                console.log("\nInvalid configuration exception in session 2 creation. Exception json - ", sheetResponseObject);
+                            } else {
+                                console.log("\nRequest not completed successfullly");
+                            }
+                        }
+                    } else if (sheetResponseObject instanceof SDK.V1.InvalidConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", sheetResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
@@ -118,6 +125,33 @@ class EditSheet {
         } catch (error) {
             console.log("\nException while running sample code", error);
         }
+    }
+
+   //Include office-integrator-sdk package in your package json and the execute this code.
+
+   static async initializeSdk() {
+
+        // Refer this help page for api end point domain details -  https://www.zoho.com/officeintegrator/api/v1/getting-started.html
+        let environment = await new SDK.ApiServer.Production("https://api.office-integrator.com");
+
+        let auth = new SDK.AuthBuilder()
+                        .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+                        .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
+                        .build();
+
+        let tokens = [ auth ];
+
+        //Sdk application log configuration
+        let logger = new SDK.LogBuilder()
+            .level(SDK.Levels.INFO)
+            //.filePath("<file absolute path where logs would be written>") //No I18N
+            .build();
+
+        let initialize = await new SDK.InitializeBuilder();
+
+        await initialize.environment(environment).tokens(tokens).logger(logger).initialize();
+
+        console.log("SDK initialized successfully.");
     }
 }
 

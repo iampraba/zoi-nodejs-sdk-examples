@@ -1,37 +1,8 @@
-const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
-const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
-const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
-const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
-const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
-const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
-const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
-
-const fs = require("fs");
-const StreamWrapper = require("zoi-nodejs-sdk/utils/util/stream_wrapper").StreamWrapper;
-const MailMergeWebhookSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/mail_merge_webhook_settings").MailMergeWebhookSettings;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
-const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
-const MergeAndDeliverViaWebhookParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/merge_and_deliver_via_webhook_parameters").MergeAndDeliverViaWebhookParameters;
-const MergeAndDeliverViaWebhookSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/merge_and_deliver_via_webhook_success_response").MergeAndDeliverViaWebhookSuccessResponse;
+import * as SDK from "@zoho/office-integrator-sdk";
+import { readFileSync, writeFileSync } from 'fs';
+const __dirname = import.meta.dirname;
 
 class MergeAndDeliver {
-
-    //Include zoi-nodejs-sdk package in your package json and the execute this code.
-
-    static async initializeSdk() {
-        let user = new UserSignature("john@zylker.com");
-        let environment = new Environment("https://api.office-integrator.com", null, null);
-        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
-        let logger = new LogBuilder()
-            .level(Levels.INFO)
-            .filePath("./app.log")
-            .build();
-        let initialize = await new InitializeBuilder();
-
-        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
-
-        console.log("\nSDK initialized successfully.");
-    }
 
     static async execute() {
         
@@ -40,50 +11,48 @@ class MergeAndDeliver {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new V1Operations();
-            var parameters = new MergeAndDeliverViaWebhookParameters();
+            var sdkOperations = new SDK.V1.V1Operations();
+            var parameters = new SDK.V1.MergeAndDeliverViaWebhookParameters();
 
+            //Either use url as document source or attach the document in request body use below methods
             parameters.setFileUrl("https://demo.office-integrator.com/zdocs/OfferLetter.zdoc");
             parameters.setMergeDataJsonUrl("https://demo.office-integrator.com/data/candidates.json");
 
             // var fileName = "OfferLetter.zdoc";
             // var filePath = __dirname + "/sample_documents/OfferLetter.zdoc";
-            // var fileStream = fs.readFileSync(filePath);
-            // var streamWrapper = new StreamWrapper(fileName, fileStream, filePath);
+            // var fileStream = readFileSync(filePath);
+            // var streamWrapper = new SDK.StreamWrapper(fileName, fileStream, filePath);
             
             // parameters.setFileContent(streamWrapper);
 
-            parameters.setOutputFormat("zdoc");
-            parameters.setMergeTo("separatedoc");
-
-            parameters.setPassword("***");
-
             // var jsonFileName = "candidates.json";
             // var jsonFilePath = __dirname + "/sample_documents/candidates.json";
-            // var jsonFileStream = fs.readFileSync(jsonFilePath);
-            // var jsonStreamWrapper = new StreamWrapper(jsonFileName, jsonFileStream, jsonFilePath);
+            // var jsonFileStream = readFileSync(jsonFilePath);
+            // var jsonStreamWrapper = new SDK.StreamWrapper(jsonFileName, jsonFileStream, jsonFilePath);
 
             // parameters.setMergeDataJsonContent(jsonStreamWrapper);
 
-            var webhookSettings = new MailMergeWebhookSettings();
+            parameters.setOutputFormat("zdoc");
+            parameters.setMergeTo("separatedoc");
+            parameters.setPassword("***");
+            
+            var webhookSettings = new SDK.V1.MailMergeWebhookSettings();
 
             webhookSettings.setInvokeUrl("https://officeintegrator.zoho.com/v1/api/webhook/savecallback/601e12157a25e63fc4dfd4e6e00cc3da2406df2b9a1d84a903c6cfccf92c8286");
             webhookSettings.setInvokePeriod("oncomplete");
 
             parameters.setWebhook(webhookSettings);
-            
+
             //var mergeData = new Map();
             //parameters.setMergeData(mergeData);
 
             //var csvFileName = "csv_data_source.csv";
-            //var csvFilePath = "/Users/praba-2086/Desktop/csv_data_source.csv";
-            //var csvFileStream = fs.readFileSync(csvFilePath);
-            //var csvStreamWrapper = new StreamWrapper(csvFileName, csvFileStream, csvFilePath);
+            //var csvFilePath = __dirname + "/sample_documents/csv_data_source.csv";
+            //var csvFileStream = readFileSync(csvFilePath);
+            //var csvStreamWrapper = new SDK.StreamWrapper(csvFileName, csvFileStream, csvFilePath);
 
             //parameters.setMergeDataCsvContent(csvStreamWrapper);
-            
             //parameters.setMergeDataCsvUrl("https://demo.office-integrator.com/data/csv_data_source.csv");
-            //parameters.setMergeDataJsonUrl("https://demo.office-integrator.com/zdocs/json_data_source.json");
 
             var responseObject = await sdkOperations.mergeAndDeliverViaWebhook(parameters);
 
@@ -93,10 +62,10 @@ class MergeAndDeliver {
                 let writerResponseObject = responseObject.object;
     
                 if(writerResponseObject != null) {
-                    if(writerResponseObject instanceof MergeAndDeliverViaWebhookSuccessResponse) {
+                    if(writerResponseObject instanceof SDK.V1.MergeAndDeliverViaWebhookSuccessResponse) {
                         console.log("\nRecords - " + JSON.stringify(writerResponseObject.getRecords()));
                         console.log("\nMerge report data url - " + writerResponseObject.getMergeReportDataUrl());
-                    } else if (writerResponseObject instanceof InvaildConfigurationException) {
+                    } else if (writerResponseObject instanceof SDK.V1.InvalidConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
@@ -106,6 +75,33 @@ class MergeAndDeliver {
         } catch (error) {
             console.log("\nException while running sample code", error);
         }
+    }
+
+    //Include office-integrator-sdk package in your package json and the execute this code.
+
+    static async initializeSdk() {
+
+        // Refer this help page for api end point domain details -  https://www.zoho.com/officeintegrator/api/v1/getting-started.html
+        let environment = await new SDK.ApiServer.Production("https://api.office-integrator.com");
+
+        let auth = new SDK.AuthBuilder()
+                        .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+                        .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
+                        .build();
+
+        let tokens = [ auth ];
+
+        //Sdk application log configuration
+        let logger = new SDK.LogBuilder()
+            .level(SDK.Levels.INFO)
+            //.filePath("<file absolute path where logs would be written>") //No I18N
+            .build();
+
+        let initialize = await new SDK.InitializeBuilder();
+
+        await initialize.environment(environment).tokens(tokens).logger(logger).initialize();
+
+        console.log("SDK initialized successfully.");
     }
 }
 

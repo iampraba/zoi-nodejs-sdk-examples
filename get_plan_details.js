@@ -1,33 +1,8 @@
-const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
-const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
-const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
-const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
-const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
-const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
-const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
+import * as SDK from "@zoho/office-integrator-sdk";
 
-const PlanDetails = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/plan_details").PlanDetails;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
-const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
+
 
 class GetPlanDetails {
-
-    //Include zoi-nodejs-sdk package in your package json and the execute this code.
-
-    static async initializeSdk() {
-        let user = new UserSignature("john@zylker.com");
-        let environment = new Environment("https://api.office-integrator.com", null, null);
-        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
-        let logger = new LogBuilder()
-            .level(Levels.INFO)
-            .filePath("./app.log")
-            .build();
-        let initialize = await new InitializeBuilder();
-
-        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
-
-        console.log("\nSDK initialized successfully.");
-    }
 
     static async execute() {
         
@@ -36,7 +11,7 @@ class GetPlanDetails {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new V1Operations();
+            var sdkOperations = new SDK.V1.V1Operations();
             var responseObject = await sdkOperations.getPlanDetails();
 
             if(responseObject != null) {
@@ -47,14 +22,14 @@ class GetPlanDetails {
                 let planResponseObject = responseObject.object;
     
                 if(planResponseObject != null) {
-                    if(planResponseObject instanceof PlanDetails){
+                    if(planResponseObject instanceof SDK.V1.PlanDetails){
                         console.log("\nPlan name - " + planResponseObject.getPlanName());
                         console.log("\nAPI usage limit - " + planResponseObject.getUsageLimit());
                         console.log("\nAPI usage so far - " + planResponseObject.getTotalUsage());
                         console.log("\nPlan upgrade payment link - " + planResponseObject.getPaymentLink());
                         console.log("\nSubscription period - " + planResponseObject.getSubscriptionPeriod());
                         console.log("\nSubscription interval - " + planResponseObject.getSubscriptionInterval());
-                    } else if (planResponseObject instanceof InvaildConfigurationException) {
+                    } else if (planResponseObject instanceof SDK.V1.InvalidConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
@@ -64,6 +39,33 @@ class GetPlanDetails {
         } catch (error) {
             console.log("\nException while running sample code", error);
         }
+    }
+
+    //Include office-integrator-sdk package in your package json and the execute this code.
+
+    static async initializeSdk() {
+
+        // Refer this help page for api end point domain details -  https://www.zoho.com/officeintegrator/api/v1/getting-started.html
+        let environment = await new SDK.ApiServer.Production("https://api.office-integrator.com");
+
+        let auth = new SDK.AuthBuilder()
+                        .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+                        .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
+                        .build();
+
+        let tokens = [ auth ];
+
+        //Sdk application log configuration
+        let logger = new SDK.LogBuilder()
+            .level(SDK.Levels.INFO)
+            //.filePath("<file absolute path where logs would be written>") //No I18N
+            .build();
+
+        let initialize = await new SDK.InitializeBuilder();
+
+        await initialize.environment(environment).tokens(tokens).logger(logger).initialize();
+
+        console.log("SDK initialized successfully.");
     }
 }
 

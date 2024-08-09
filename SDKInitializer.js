@@ -1,30 +1,39 @@
-const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
-const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
-const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
-const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
-const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
-const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
-const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
+import * as SDK from "@zoho/office-integrator-sdk";
 
 class SDKInitializer {
 
-    static async initialize() {
-        let user = new UserSignature("praburaji93@gmail.com");
-        let environment = new Environment("https://api.office-integrator.com", null, null);
-        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
-        let logger = new LogBuilder()
-            .level(Levels.INFO)
-            .filePath("./app.log")
-            .build();
-        let initialize = await new InitializeBuilder();
+    //Include office-integrator-sdk package in your package json and the execute this code.
 
-        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
+    static async initializeSdk() {
+
+        // Refer this help page for api end point domain details -  https://www.zoho.com/officeintegrator/api/v1/getting-started.html
+        let environment = await new SDK.ApiServer.Production("https://api.office-integrator.com");
+
+        let auth = new SDK.AuthBuilder()
+            .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+            .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
+            .build();
+
+        let tokens = [ auth ];
+
+        //Sdk application log configuration
+        let logger = new SDK.LogBuilder()
+            .level(SDK.Levels.INFO)
+            //.filePath("<file absolute path where logs would be written>") //No I18N
+            .build();
+
+        let initialize = await new SDK.InitializeBuilder();
+
+        await initialize.environment(environment).tokens(tokens).logger(logger).initialize();
 
         console.log("SDK initialized successfully.");
     }
-
 }
 
-module.exports = {
-    SDKInitializer: SDKInitializer
+export {
+    SDKInitializer as SDKInitializer
 };
+
+//Below code added to denote how to call sdk initializer. 
+//You need to call initializeSdk method only once when your application starts.
+SDKInitializer.initializeSdk();

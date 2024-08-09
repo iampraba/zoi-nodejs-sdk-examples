@@ -1,5 +1,5 @@
 {
-  "name": "zoi-nodejs-sdk-examples-save-callback",
+  "name": "office-integrator-save-callback-sample",
   "title": "Zoho Office Integrator NodeJs SDK Save Callback Implementation Sample",
   "version": "1.0.0",
   "description": "This code repository showcases examples that illustrate the way to handle save callback from Zoho Office Integrator.",
