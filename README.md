@@ -3,7 +3,7 @@
 
 ## Getting Started
 
-Zoho Office Integrator NodeJS SDK used to help you quickly integrator Zoho Office Integrator editors in side your web application. This repository will example code to integrate Zoho Office Integrator using NodeJs sdk.
+The Zoho Office Integrator NodeJS SDK facilitates the rapid integration of Zoho Office Integrator editors into your web application. This repository contains sample code to demonstrate how to integrate the Zoho Office Integrator editor using the NodeJS SDK.
 
 ## How to run the example codes
 
@@ -13,15 +13,15 @@ You can include the SDK to your project using:
 
 - Clone this repository in your local machine.
    ```sh
-    git clone https://github.com/iampraba/zoi-nodejs-sdk-examples.git
+    git clone https://github.com/zoho/office-integrator-nodejs-sdk-examples
     ```
 
-- Install [**NodeJS SDK**](https://www.npmjs.com/package/zoi-nodejs-sdk) and other dependencies 
-    - Navigate to the folder **zoi-nodejs-sdk-examples**
+- Install [**NodeJS SDK**](https://www.npmjs.com/package/office-integrator-sdk) and other dependencies 
+    - Navigate to the folder **office-integrator-nodejs-sdk-examples**
         ```sh
-        cd zoi-nodejs-sdk-examples
+        cd office-integrator-nodejs-sdk-examples
         ```
-    - Follow the steps mentioned in this page make change according in **[SDKInitializer.js](SDKInitializer.js)** file. https://github.com/iampraba/zoi-nodejs-sdk#configuration)
+    - Follow the steps mentioned in this page and make change according in **[SDKInitializer.js](SDKInitializer.js)** file. https://github.com/zoho/office-integrator-nodejs-sdk#configuration)
 
     - Run the command below:
       ```sh

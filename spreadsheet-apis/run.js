@@ -1,4 +1,4 @@
-const { exec } = require('child_process');
+import { exec } from 'child_process';
 
 // List all the Node.js files you want to run in an array
 const files = ["coedit_sheet.js", "create_sheet.js", "delete_sheet_session.js", "get_session_detail.js", "convert_sheet.js",	"delete_sheet.js", "edit_sheet.js", "preview_sheet.js"];

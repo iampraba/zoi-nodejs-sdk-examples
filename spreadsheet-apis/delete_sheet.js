@@ -1,34 +1,6 @@
-const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
-const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
-const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
-const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
-const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
-const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
-const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
-
-const CreateSheetParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_sheet_parameters").CreateSheetParameters;
-const FileDeleteSuccessResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/file_delete_success_response").FileDeleteSuccessResponse;
-const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+import * as SDK from "@zoho-corp/office-integrator-sdk";
 
 class DeleteSheet {
-
-    //Include zoi-nodejs-sdk package in your package json and the execute this code.
-
-    static async initializeSdk() {
-        let user = new UserSignature("john@zylker.com");
-        let environment = new Environment("https://api.office-integrator.com", null, null);
-        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
-        let logger = new LogBuilder()
-            .level(Levels.INFO)
-            .filePath("./app.log")
-            .build();
-        let initialize = await new InitializeBuilder();
-
-        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
-
-        console.log("\nSDK initialized successfully.");
-    }
 
     static async execute() {
         
@@ -37,8 +9,8 @@ class DeleteSheet {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new V1Operations();
-            var createSheetParameters = new CreateSheetParameters();
+            var sdkOperations = new SDK.V1.V1Operations();
+            var createSheetParameters = new SDK.V1.CreateSheetParameters();
 
             var newSessionObject = await sdkOperations.createSheet(createSheetParameters);
             var documentId = newSessionObject.object.getDocumentId();
@@ -55,9 +27,9 @@ class DeleteSheet {
                 let sheetResponseObject = responseObject.object;
 
                 if(sheetResponseObject != null){
-                    if(sheetResponseObject instanceof FileDeleteSuccessResponse){
+                    if(sheetResponseObject instanceof SDK.V1.FileDeleteSuccessResponse){
                         console.log("\nSheet delete status - " + sheetResponseObject.getDocDelete());
-                    } else if (sheetResponseObject instanceof InvaildConfigurationException) {
+                    } else if (sheetResponseObject instanceof SDK.V1.InvalidConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", sheetResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
@@ -67,6 +39,33 @@ class DeleteSheet {
         } catch (error) {
             console.log("\nException while running sample code", error);
         }
+    }
+
+    //Include office-integrator-sdk package in your package json and the execute this code.
+
+    static async initializeSdk() {
+
+        // Refer this help page for api end point domain details -  https://www.zoho.com/officeintegrator/api/v1/getting-started.html
+        let environment = await new SDK.ApiServer.Production("https://api.office-integrator.com");
+
+        let auth = new SDK.AuthBuilder()
+                        .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+                        .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
+                        .build();
+
+        let tokens = [ auth ];
+
+        //Sdk application log configuration
+        let logger = new SDK.LogBuilder()
+            .level(SDK.Levels.INFO)
+            //.filePath("<file absolute path where logs would be written>") //No I18N
+            .build();
+
+        let initialize = await new SDK.InitializeBuilder();
+
+        await initialize.environment(environment).tokens(tokens).logger(logger).initialize();
+
+        console.log("SDK initialized successfully.");
     }
 }
 

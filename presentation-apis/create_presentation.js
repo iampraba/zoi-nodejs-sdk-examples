@@ -1,38 +1,8 @@
-const Levels = require("zoi-nodejs-sdk/routes/logger/logger").Levels;
-const Constants = require("zoi-nodejs-sdk/utils/util/constants").Constants;
-const APIKey = require("zoi-nodejs-sdk/models/authenticator/apikey").APIKey;
-const Environment = require("zoi-nodejs-sdk/routes/dc/environment").Environment;
-const LogBuilder = require("zoi-nodejs-sdk/routes/logger/log_builder").LogBuilder;
-const UserSignature = require("zoi-nodejs-sdk/routes/user_signature").UserSignature;
-const InitializeBuilder = require("zoi-nodejs-sdk/routes/initialize_builder").InitializeBuilder;
-
-const UserInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/user_info").UserInfo;
-const DocumentInfo = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/document_info").DocumentInfo;
-const CallbackSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/callback_settings").CallbackSettings;
-const CreateDocumentResponse = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_document_response").CreateDocumentResponse;
-const ZohoShowEditorSettings = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/zoho_show_editor_settings").ZohoShowEditorSettings;
-const CreatePresentationParameters = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/create_presentation_parameters").CreatePresentationParameters;
-const V1Operations = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/v1_operations").V1Operations;
-const InvaildConfigurationException = require("zoi-nodejs-sdk/core/com/zoho/officeintegrator/v1/invaild_configuration_exception").InvaildConfigurationException;
+import * as SDK from "@zoho-corp/office-integrator-sdk";
+import { readFileSync, writeFileSync } from 'fs';
+const __dirname = import.meta.dirname;
 
 class CreatePresentation {
-
-    //Include zoi-nodejs-sdk package in your package json and the execute this code.
-
-    static async initializeSdk() {
-        let user = new UserSignature("john@zylker.com");
-        let environment = new Environment("https://api.office-integrator.com", null, null);
-        let apikey = new APIKey("2ae438cf864488657cc9754a27daa480", Constants.PARAMS);
-        let logger = new LogBuilder()
-            .level(Levels.INFO)
-            .filePath("./app.log")
-            .build();
-        let initialize = await new InitializeBuilder();
-
-        await initialize.user(user).environment(environment).token(apikey).logger(logger).initialize();
-
-        console.log("\nSDK initialized successfully.");
-    }
 
     static async execute() {
         
@@ -41,10 +11,10 @@ class CreatePresentation {
         await this.initializeSdk();
 
         try {
-            var sdkOperations = new V1Operations();
-            var createPresentationParameters = new CreatePresentationParameters();
+            var sdkOperations = new SDK.V1.V1Operations();
+            var createPresentationParameters = new SDK.V1.CreatePresentationParameters();
             
-            var documentInfo = new DocumentInfo();
+            var documentInfo = new SDK.V1.DocumentInfo();
 
             //Time value used to generate unique document everytime. You can replace based on your application.
             documentInfo.setDocumentId("" + new Date().getTime());
@@ -52,14 +22,14 @@ class CreatePresentation {
 
             createPresentationParameters.setDocumentInfo(documentInfo);
 
-            var userInfo = new UserInfo();
+            var userInfo = new SDK.V1.UserInfo();
 
             userInfo.setUserId("1000");
             userInfo.setDisplayName("Prabakaran R");
 
             createPresentationParameters.setUserInfo(userInfo);
 
-            var editorSettings = new ZohoShowEditorSettings();
+            var editorSettings = new SDK.V1.ZohoShowEditorSettings();
 
             editorSettings.setLanguage("en");
 
@@ -73,7 +43,7 @@ class CreatePresentation {
 
             createPresentationParameters.setPermissions(permissions);
 
-            var callbackSettings = new CallbackSettings();
+            var callbackSettings = new SDK.V1.CallbackSettings();
             var saveUrlParams = new Map();
 
             saveUrlParams.set("auth_token", "1234");
@@ -101,14 +71,14 @@ class CreatePresentation {
     
                 if(writerResponseObject != null){
 
-                    if(writerResponseObject instanceof CreateDocumentResponse){
+                    if(writerResponseObject instanceof SDK.V1.CreateDocumentResponse){
                         console.log("\nPresentation ID - " + writerResponseObject.getDocumentId());
                         console.log("\nPresentation session ID - " + writerResponseObject.getSessionId());
                         console.log("\nPresentation session URL - " + writerResponseObject.getDocumentUrl());
                         console.log("\nPresentation save URL - " + writerResponseObject.getSaveUrl());
                         console.log("\nPresentation delete URL - " + writerResponseObject.getDocumentDeleteUrl());
                         console.log("\nPresentation session delete URL - " + writerResponseObject.getSessionDeleteUrl());
-                    } else if (writerResponseObject instanceof InvaildConfigurationException) {
+                    } else if (writerResponseObject instanceof SDK.V1.InvalidConfigurationException) {
                         console.log("\nInvalid configuration exception. Exception json - ", writerResponseObject);
                     } else {
                         console.log("\nRequest not completed successfullly");
@@ -118,6 +88,33 @@ class CreatePresentation {
         } catch (error) {
             console.log("\nException while running sample code", error);
         }
+    }
+
+    //Include office-integrator-sdk package in your package json and the execute this code.
+
+    static async initializeSdk() {
+
+        // Refer this help page for api end point domain details -  https://www.zoho.com/officeintegrator/api/v1/getting-started.html
+        let environment = await new SDK.ApiServer.Production("https://api.office-integrator.com");
+
+        let auth = new SDK.AuthBuilder()
+                        .addParam("apikey", "2ae438cf864488657cc9754a27daa480") //Update this apikey with your own apikey signed up in office inetgrator service
+                        .authenticationSchema(await new SDK.V1.Authentication().getTokenFlow())
+                        .build();
+
+        let tokens = [ auth ];
+
+        //Sdk application log configuration
+        let logger = new SDK.LogBuilder()
+            .level(SDK.Levels.INFO)
+            //.filePath("<file absolute path where logs would be written>") //No I18N
+            .build();
+
+        let initialize = await new SDK.InitializeBuilder();
+
+        await initialize.environment(environment).tokens(tokens).logger(logger).initialize();
+
+        console.log("SDK initialized successfully.");
     }
 }
 
