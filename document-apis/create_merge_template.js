@@ -1,4 +1,4 @@
-import * as SDK from "@zoho/office-integrator-sdk";
+import * as SDK from "@zoho-corp/office-integrator-sdk";
 import { readFileSync } from 'fs';
 const __dirname = import.meta.dirname;
 

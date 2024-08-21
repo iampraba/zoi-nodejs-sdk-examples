@@ -1,4 +1,4 @@
-import * as SDK from "@zoho/office-integrator-sdk";
+import * as SDK from "@zoho-corp/office-integrator-sdk";
 
 class CreateDocument {
 
